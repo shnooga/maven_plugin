@@ -40,42 +40,33 @@ public class MyMojo
     /**
      * Location of the file.
      */
-    @Parameter( defaultValue = "${project.build.directory}", property = "outputDir", required = true )
+    @Parameter( defaultValue = "${project.build.directory}", property = "inputFile", required = true )
+	private File inputFile;
+    @Parameter( defaultValue = "${basedir}/src/main/resources", property = "outputDir", required = true )
     private File outputDirectory;
 
-    public void execute()
-        throws MojoExecutionException
-    {
+    public void execute() throws MojoExecutionException {
         File f = outputDirectory;
 
-        if ( !f.exists() )
-        {
+        if ( !f.exists() ) 
             f.mkdirs();
-        }
 
         File touch = new File( f, "touch.txt" );
 
         FileWriter w = null;
-        try
-        {
+        try {
             w = new FileWriter( touch );
-
             w.write( "touch.txt" );
+			System.out.println("hi");
         }
-        catch ( IOException e )
-        {
+        catch ( IOException e ) {
             throw new MojoExecutionException( "Error creating file " + touch, e );
         }
-        finally
-        {
-            if ( w != null )
-            {
-                try
-                {
+        finally {
+            if ( w != null ) {
+                try {
                     w.close();
-                }
-                catch ( IOException e )
-                {
+                } catch ( IOException e ) {
                     // ignore
                 }
             }
