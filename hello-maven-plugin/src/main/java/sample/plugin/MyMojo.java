@@ -15,61 +15,78 @@ package sample.plugin;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+import java.io.*;
+import java.util.logging.*;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
-
-import org.apache.maven.plugins.annotations.LifecyclePhase;
-import org.apache.maven.plugins.annotations.Mojo;
-import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.plugins.annotations.ResolutionScope;
-
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import org.apache.maven.plugins.annotations.*;
 
 /**
  * Goal which touches a timestamp file.
  *
  * @deprecated Don't use!
  */
-@Mojo( name = "touch", defaultPhase = LifecyclePhase.PROCESS_SOURCES )
+@Mojo(name = "touch", defaultPhase = LifecyclePhase.PROCESS_SOURCES)
 public class MyMojo
-    extends AbstractMojo
-{
-    /**
-     * Location of the file.
-     */
-    @Parameter( defaultValue = "${project.build.directory}", property = "inputFile", required = true )
-	private File inputFile;
-    @Parameter( defaultValue = "${basedir}/src/main/resources", property = "outputDir", required = true )
-    private File outputDirectory;
+		extends AbstractMojo {
 
-    public void execute() throws MojoExecutionException {
-        File f = outputDirectory;
+	/**
+	 * Location of the file.
+	 */
+	@Parameter(defaultValue = "${basedir}/myrule.drl", property = "inputFile", required = true)
+	private String inputFile;
+//	private File inputFile;
+	@Parameter(defaultValue = "${basedir}/src/main/resources", property = "outputDir", required = true)
+	private File outputDirectory;
 
-        if ( !f.exists() ) 
-            f.mkdirs();
+	public void execute() throws MojoExecutionException {
+		File f = outputDirectory;
 
-        File touch = new File( f, "touch.txt" );
+		if (!f.exists()) {
+			f.mkdirs();
+		}
 
-        FileWriter w = null;
-        try {
-            w = new FileWriter( touch );
-            w.write( "touch.txt" );
+		File touch = new File(f, "touch.txt");
+
+		FileWriter w = null;
+		try {
+			w = new FileWriter(touch);
+			w.write("touch.txt");
 			System.out.println("hi");
-        }
-        catch ( IOException e ) {
-            throw new MojoExecutionException( "Error creating file " + touch, e );
-        }
-        finally {
-            if ( w != null ) {
-                try {
-                    w.close();
-                } catch ( IOException e ) {
-                    // ignore
-                }
-            }
-        }
-    }
+		} catch (IOException e) {
+			throw new MojoExecutionException("Error creating file " + touch, e);
+		} finally {
+			if (w != null) {
+				try {
+					w.close();
+				} catch (IOException e) {
+					// ignore
+				}
+			}
+		}
+
+		readFile(inputFile);
+	}
+
+	private void readFile(String fileName) {
+		try {
+			FileReader fr = null;
+
+			fr = new FileReader(new File(fileName));
+			BufferedReader br = new BufferedReader(fr);
+			String line;
+			while ((line = br.readLine()) != null) {
+				if (line.contains("password")) {
+					System.out.println(line);
+				}
+
+			}
+			br.close();
+			fr.close();
+		} catch (FileNotFoundException ex) {
+			Logger.getLogger(MyMojo.class.getName()).log(Level.SEVERE, null, ex);
+		} catch (IOException ex) {
+			Logger.getLogger(MyMojo.class.getName()).log(Level.SEVERE, null, ex);
+		}
+	}
 }
