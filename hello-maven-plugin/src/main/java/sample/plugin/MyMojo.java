@@ -16,6 +16,8 @@ package sample.plugin;
  * limitations under the License.
  */
 import java.io.*;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.logging.*;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -27,15 +29,11 @@ import org.apache.maven.plugins.annotations.*;
  * @deprecated Don't use!
  */
 @Mojo(name = "touch", defaultPhase = LifecyclePhase.PROCESS_SOURCES)
-public class MyMojo
-		extends AbstractMojo {
+public class MyMojo extends AbstractMojo {
+	private String[] flaggedSyntax = {"import .*", "ruleflow-group .*"};
 
-	/**
-	 * Location of the file.
-	 */
 	@Parameter(defaultValue = "${basedir}/myrule.drl", property = "inputFile", required = true)
 	private String inputFile;
-//	private File inputFile;
 	@Parameter(defaultValue = "${basedir}/src/main/resources", property = "outputDir", required = true)
 	private File outputDirectory;
 
@@ -52,7 +50,6 @@ public class MyMojo
 		try {
 			w = new FileWriter(touch);
 			w.write("touch.txt");
-			System.out.println("hi");
 		} catch (IOException e) {
 			throw new MojoExecutionException("Error creating file " + touch, e);
 		} finally {
@@ -65,21 +62,29 @@ public class MyMojo
 			}
 		}
 
-		readFile(inputFile);
+		String inputTxt = readFile(inputFile);
+		System.out.println(inputTxt);
 	}
 
-	private void readFile(String fileName) {
-		try {
-			FileReader fr = null;
 
-			fr = new FileReader(new File(fileName));
+	private boolean containsFlaggedSyntax(String text) {
+//		return getFlaggedSyntax().contains(text);
+		for (String syntax: flaggedSyntax) 
+			if(text.matches(syntax))
+				return true;
+		return false;
+	}
+
+	private String readFile(String fileName) {
+		StringBuilder sb = new StringBuilder();
+
+		try {
+			FileReader fr = new FileReader(new File(fileName));
 			BufferedReader br = new BufferedReader(fr);
 			String line;
 			while ((line = br.readLine()) != null) {
-				if (line.contains("password")) {
-					System.out.println(line);
-				}
-
+				if(!containsFlaggedSyntax(line))
+					sb.append(line).append("\n");
 			}
 			br.close();
 			fr.close();
@@ -88,5 +93,6 @@ public class MyMojo
 		} catch (IOException ex) {
 			Logger.getLogger(MyMojo.class.getName()).log(Level.SEVERE, null, ex);
 		}
+		return sb.toString();
 	}
 }
