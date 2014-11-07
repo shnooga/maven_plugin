@@ -106,7 +106,6 @@
 					<plugin>
 						<groupId>sample.plugin</groupId>
 						<artifactId>rulecopy</artifactId>
-						<version>1.0.1</version>
 					</plugin>
 				</plugins>
 
