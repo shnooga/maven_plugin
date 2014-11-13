@@ -68,7 +68,8 @@ public class FileNameManipulator {
 	 * @return
 	 */
 	public String extractFileName() {
-		return splitFileName()[2];
+		return path.getFileName().toString();
+//		return splitFileName()[2];
 	}
 
 	/**
@@ -77,13 +78,15 @@ public class FileNameManipulator {
 	 * @return A 3 element array of path, filename, file extension
 	 */
 	public String[] splitFileName() {
-		int extIndex = qualifiedFileName.lastIndexOf(".");
-		String fileExtension = (extIndex > 0) ? qualifiedFileName.substring(extIndex, qualifiedFileName.length()) : "";
+		String fileName = path.getFileName().toString();
+		int extIndex = fileName.lastIndexOf(".");
+		String file			= (extIndex > 0) ? fileName.substring(extIndex): "";
+		String fileExtension= (extIndex > 0) ? fileName.substring(extIndex, fileName.length()): "";
 
-		int pathIndex = qualifiedFileName.lastIndexOf("\\");
-		String fileName = (pathIndex > 0) ? qualifiedFileName.substring(pathIndex + 1, extIndex) : "";
-		String path = (pathIndex > 0) ? qualifiedFileName.substring(0, pathIndex) : "";
+//		int pathIndex = qualifiedFileName.lastIndexOf("\\");
+//		String fileName = (pathIndex > 0) ? qualifiedFileName.substring(pathIndex + 1, extIndex) : "";
+//		String path = (pathIndex > 0) ? qualifiedFileName.substring(0, pathIndex) : "";
 
-		return new String[]{path, fileName, fileExtension};
+		return new String[]{path.getParent().toString(), file, fileExtension};
 	}
 }
