@@ -1,4 +1,4 @@
-package sample.plugin;
+package com.vsp.enterprise.test;
 
 import java.io.*;
 import java.util.logging.*;

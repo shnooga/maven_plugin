@@ -2,7 +2,7 @@
 		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>sample.plugin</groupId>
+	<groupId>com.vsp.enterprise.test</groupId>
 	<artifactId>rulecopy</artifactId>
 	<version>1.0.1</version>
 	<packaging>maven-plugin</packaging>
@@ -54,7 +54,7 @@
 				<artifactId>maven-plugin-plugin</artifactId>
 				<version>3.2</version>
 				<configuration>
-					<goalPrefix>hello-maven-plugin</goalPrefix>
+					<goalPrefix>rulecopy</goalPrefix>
 					<skipErrorNoDescriptorsFound>true</skipErrorNoDescriptorsFound>
 				</configuration>
 				<executions>
@@ -110,7 +110,7 @@
 						</executions>
 					</plugin>
 					<plugin>
-						<groupId>sample.plugin</groupId>
+						<groupId>com.vsp.enterprise.test</groupId>
 						<artifactId>rulecopy</artifactId>
 					</plugin>
 				</plugins>
