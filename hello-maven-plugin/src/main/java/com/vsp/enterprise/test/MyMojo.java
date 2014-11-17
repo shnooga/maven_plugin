@@ -8,6 +8,7 @@ import org.apache.maven.plugins.annotations.*;
 
 @Mojo(name = "touch", defaultPhase = LifecyclePhase.PROCESS_SOURCES)
 public class MyMojo extends AbstractMojo {
+	public static final String RULE_NAME_MARKER = "_faux";
 	private String[] flaggedDroolSyntax = {"import .*", "ruleflow-group .*"};
 	private String[] flaggedJavaSyntax  = {".*public class RuleTestTemplate.*", ".*String getRuleFileName.*"};
 
@@ -15,25 +16,41 @@ public class MyMojo extends AbstractMojo {
 	private String inputFile;
 
 	@Parameter(defaultValue = "${basedir}/src/main/resources", property = "outputDir", required = true)
-	private File outputDirectory;
+	private String outputDirectory;
+
+	@Parameter(defaultValue = "${basedir}/src/main/java/com/vsp/enterprise/test", property = "javaSourceDir", required = true)
+	private String javaSourceDirectory;
 
 	@Parameter(defaultValue = "${basedir}/src/main/resources/ruletesttemplate.txt", property = "templateFile", required = true)
 	private String templateRuleFile;
 
 	public void execute() throws MojoExecutionException {
-		File f = outputDirectory;
+		FileNameManipulator nameManipulator = new FileNameManipulator(inputFile);
+		nameManipulator = new FileNameManipulator(outputDirectory + File.separator + nameManipulator.extractFileName());
+		String newFileName = nameManipulator.postPendTextToFileName(RULE_NAME_MARKER);
 
-		if (!f.exists()) 
-			f.mkdirs();
+		writeFile(newFileName, readDroolFile(inputFile));
 
-		File touch = new File(f, "touch.txt");
+		nameManipulator = new FileNameManipulator(javaSourceDirectory + File.separator + nameManipulator.extractFileName());
+		newFileName = nameManipulator.postPendTextToFileName(RULE_NAME_MARKER);
+		writeFile(newFileName, readJavaTemplateFile(templateRuleFile));
 
+		String inputTxt;
+
+		inputTxt = readDroolFile(inputFile);
+		System.out.println(inputTxt);
+
+		inputTxt = readJavaTemplateFile(templateRuleFile);
+		System.out.println(inputTxt);
+	}
+
+	private void writeFile(String fileName, String text) throws MojoExecutionException {
 		FileWriter w = null;
 		try {
-			w = new FileWriter(touch);
-			w.write("touch.txt");
+			w = new FileWriter(new File(fileName));
+			w.write(text);
 		} catch (IOException e) {
-			throw new MojoExecutionException("Error creating file " + touch, e);
+			throw new MojoExecutionException("Error creating file " + fileName, e);
 		} finally {
 			if (w != null) {
 				try {
@@ -44,13 +61,6 @@ public class MyMojo extends AbstractMojo {
 			}
 		}
 
-		String inputTxt;
-
-		inputTxt = readDroolFile(inputFile);
-		System.out.println(inputTxt);
-
-		inputTxt = readJavaTemplateFile(templateRuleFile);
-		System.out.println(inputTxt);
 	}
 
 	private boolean containsFlaggedSyntax(String text, boolean isRule) {

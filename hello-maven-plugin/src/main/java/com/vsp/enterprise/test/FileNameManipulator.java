@@ -69,7 +69,6 @@ public class FileNameManipulator {
 	 */
 	public String extractFileName() {
 		return path.getFileName().toString();
-//		return splitFileName()[2];
 	}
 
 	/**
