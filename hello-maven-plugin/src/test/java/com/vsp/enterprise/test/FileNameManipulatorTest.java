@@ -15,15 +15,15 @@ public class FileNameManipulatorTest {
 	 * Test of postPendTextToFileName method, of class FileNameManipulator.
 	 */
 	@Test
-	public void testPostPendTextToFileName_Windows() {
-		manipulator = new FileNameManipulator("c:\\mydir\\is\\long\\hello.drl");
-		assertThat(manipulator.postPendTextToFileName("bogus"), is("c:\\mydir\\is\\long\\hellobogus.drl"));
-	}
-
-	@Test
-	public void testPostPendTextToFileName_Unix() {
-		manipulator = new FileNameManipulator("/mydir/is/long/hello.drl");
-		assertThat(manipulator.postPendTextToFileName("bogus"), is("\\mydir\\is\\long\\hellobogus.drl"));
+	public void testPostPendTextToFileName() {
+		String fileName = OsUtils.isWindows() 
+						? "c:\\mydir\\is\\long\\hello.drl" 
+						: "/mydir/is/long/hello.drl";
+		String expectFileName = OsUtils.isWindows() 
+						? "c:\\mydir\\is\\long\\hellobogus.drl"
+						: "/mydir/is/long/hellobogus.drl";
+		manipulator = new FileNameManipulator(fileName);
+		assertThat(manipulator.postPendTextToFileName("bogus"), is(expectFileName));
 	}
 
 	/**
@@ -31,7 +31,10 @@ public class FileNameManipulatorTest {
 	 */
 	@Test
 	public void testExtractFileName() {
-		manipulator = new FileNameManipulator("c:\\mydir\\hello.drl");
+		String fileName = OsUtils.isWindows() 
+						? "c:\\mydir\\is\\long\\hello.drl" 
+						: "/mydir/is/long/hello.drl";
+		manipulator = new FileNameManipulator(fileName);
 		assertThat(manipulator.extractFileName(), is("hello.drl"));
 	}
 }
