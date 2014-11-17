@@ -8,40 +8,37 @@ import org.apache.maven.plugins.annotations.*;
 
 @Mojo(name = "touch", defaultPhase = LifecyclePhase.PROCESS_SOURCES)
 public class MyMojo extends AbstractMojo {
-	public static final String RULE_NAME_MARKER = "_faux";
-	private String[] flaggedDroolSyntax = {"import .*", "ruleflow-group .*"};
-	private String[] flaggedJavaSyntax  = {".*public class RuleTestTemplate.*", ".*String getRuleFileName.*"};
+	public static final String RULE_NAME_MARKER = "Faux";
+	public static final String JAVA_NAME_MARKER = "Test";
+	private static final String[] flaggedDroolSyntax = {"import .*", "ruleflow-group .*"};
 
 	@Parameter(defaultValue = "${basedir}/myrule.drl", property = "inputFile", required = true)
 	private String inputFile;
 
-	@Parameter(defaultValue = "${basedir}/src/main/resources", property = "outputDir", required = true)
-	private String outputDirectory;
+	@Parameter(defaultValue = "${basedir}/src/main/resources", property = "resourceDir", required = true)
+	private String resourceDirectory;
 
-	@Parameter(defaultValue = "${basedir}/src/main/java/com/vsp/enterprise/test", property = "javaSourceDir", required = true)
-	private String javaSourceDirectory;
+	@Parameter(defaultValue = "${basedir}/src/test/java/com/vsp/enterprise/test", property = "javaTestDir", required = true)
+	private String javaTestDirectory;
 
 	@Parameter(defaultValue = "${basedir}/src/main/resources/ruletesttemplate.txt", property = "templateFile", required = true)
 	private String templateRuleFile;
 
 	public void execute() throws MojoExecutionException {
 		FileNameManipulator nameManipulator = new FileNameManipulator(inputFile);
-		nameManipulator = new FileNameManipulator(outputDirectory + File.separator + nameManipulator.extractFileName());
-		String newFileName = nameManipulator.postPendTextToFileName(RULE_NAME_MARKER);
+		
+		nameManipulator = new FileNameManipulator(resourceDirectory + File.separator + nameManipulator.extractFileName());
+		String fullyQualifiedFileName = nameManipulator.postPendTextToFileName(RULE_NAME_MARKER);
+		String ruleFileName = FileNameManipulator.extractFileName(fullyQualifiedFileName);
 
-		writeFile(newFileName, readDroolFile(inputFile));
+		writeFile(fullyQualifiedFileName, readDroolFile(inputFile));
 
-		nameManipulator = new FileNameManipulator(javaSourceDirectory + File.separator + nameManipulator.extractFileName());
-		newFileName = nameManipulator.postPendTextToFileName(RULE_NAME_MARKER);
-		writeFile(newFileName, readJavaTemplateFile(templateRuleFile));
+		String[] fileNamePaths = nameManipulator.splitFileName();
 
-		String inputTxt;
-
-		inputTxt = readDroolFile(inputFile);
-		System.out.println(inputTxt);
-
-		inputTxt = readJavaTemplateFile(templateRuleFile);
-		System.out.println(inputTxt);
+		nameManipulator = new FileNameManipulator(javaTestDirectory + File.separator + fileNamePaths[1] + ".java");
+		fullyQualifiedFileName = nameManipulator.postPendTextToFileName(JAVA_NAME_MARKER);
+		String javaFileName = FileNameManipulator.splitFileName(fullyQualifiedFileName)[1];
+		writeFile(fullyQualifiedFileName, readJavaTemplateFile(templateRuleFile, javaFileName, ruleFileName));
 	}
 
 	private void writeFile(String fileName, String text) throws MojoExecutionException {
@@ -63,9 +60,8 @@ public class MyMojo extends AbstractMojo {
 
 	}
 
-	private boolean containsFlaggedSyntax(String text, boolean isRule) {
-		String[] flaggedSyntax = isRule ? flaggedDroolSyntax : flaggedJavaSyntax;
-		for (String syntax: flaggedSyntax) 
+	private boolean containsFlaggedSyntax(String text) {
+		for (String syntax: flaggedDroolSyntax) 
 			if(text.matches(syntax))
 				return true;
 		return false;
@@ -80,7 +76,7 @@ public class MyMojo extends AbstractMojo {
 			String line;
 
 			while ((line = br.readLine()) != null) 
-				if(!containsFlaggedSyntax(line, true))
+				if(!containsFlaggedSyntax(line))
 					sb.append(line).append("\n");
 
 			br.close();
@@ -93,7 +89,7 @@ public class MyMojo extends AbstractMojo {
 		return sb.toString();
 	}
 
-	private String readJavaTemplateFile(String fileName) {
+	private String readJavaTemplateFile(String fileName, String className, String ruleName) {
 		StringBuilder sb = new StringBuilder();
 
 		try {
@@ -101,10 +97,14 @@ public class MyMojo extends AbstractMojo {
 			BufferedReader br = new BufferedReader(fr);
 			String line;
 
-			while ((line = br.readLine()) != null) 
-				if(!containsFlaggedSyntax(line, false))
+			while ((line = br.readLine()) != null) {
+				if(line.matches(".*public class RuleTestTemplate.*"))
+					sb.append("public class ").append(className).append(" extends RuleHarness {\n");
+				else if(line.matches(".*String getRuleFileName.*"))
+					sb.append("String getRuleFileName() { return \"").append(ruleName).append("\"; }\n");
+				else
 					sb.append(line).append("\n");
-
+			}
 			br.close();
 			fr.close();
 		} catch (FileNotFoundException ex) {

@@ -12,11 +12,9 @@ import java.util.StringTokenizer;
 public class FileNameManipulator {
 
 	private String qualifiedFileName;
-	private Path path;
 
 	public FileNameManipulator(String fileName) {
 		this.qualifiedFileName = fileName;
-		path = Paths.get(qualifiedFileName);
 		replaceWithUnixSeparator();
 	}
 
@@ -42,6 +40,7 @@ public class FileNameManipulator {
 	 * @return
 	 */
 	public String postPendTextToFileName(String text) {
+		Path path = Paths.get(qualifiedFileName);
 //		path = Paths.get("C:\\home\\joe\\foo");
 //		path = Paths.get("/home/joe/foo");
 //		path = Paths.get("c:/mydir/hello.drl");
@@ -68,7 +67,12 @@ public class FileNameManipulator {
 	 * @return
 	 */
 	public String extractFileName() {
+		Path path = Paths.get(qualifiedFileName);
 		return path.getFileName().toString();
+	}
+
+	public static String extractFileName(String fullFileName) {
+		return Paths.get(fullFileName).getFileName().toString();
 	}
 
 	/**
@@ -77,6 +81,22 @@ public class FileNameManipulator {
 	 * @return A 3 element array of path, filename, file extension
 	 */
 	public String[] splitFileName() {
+		Path path = Paths.get(qualifiedFileName);
+		String fileName 	= path.getFileName().toString();
+		int extIndex 		= fileName.lastIndexOf(".");
+		String file			= (extIndex > 0) ? fileName.substring(0, extIndex): "";
+		String fileExtension= (extIndex > 0) ? fileName.substring(extIndex + 1, fileName.length()): "";
+
+		return new String[]{path.getParent().toString(), file, fileExtension};
+	}
+
+	/**
+	 * "c:/mydir/foo.bar" -> ["c:/mydir", "foo", "bar"]
+	 *
+	 * @return A 3 element array of path, filename, file extension
+	 */
+	public static String[] splitFileName(String fullFileName) {
+		Path path = Paths.get(fullFileName);
 		String fileName 	= path.getFileName().toString();
 		int extIndex 		= fileName.lastIndexOf(".");
 		String file			= (extIndex > 0) ? fileName.substring(0, extIndex): "";
