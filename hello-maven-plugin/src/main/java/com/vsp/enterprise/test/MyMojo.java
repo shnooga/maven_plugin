@@ -49,7 +49,7 @@ public class MyMojo extends AbstractMojo {
 		inputTxt = readDroolFile(inputFile);
 		System.out.println(inputTxt);
 
-		inputTxt = readJavaFile(templateRuleFile);
+		inputTxt = readJavaTemplateFile(templateRuleFile);
 		System.out.println(inputTxt);
 	}
 
@@ -83,7 +83,7 @@ public class MyMojo extends AbstractMojo {
 		return sb.toString();
 	}
 
-	private String readJavaFile(String fileName) {
+	private String readJavaTemplateFile(String fileName) {
 		StringBuilder sb = new StringBuilder();
 
 		try {
