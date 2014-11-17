@@ -57,7 +57,6 @@ public class MyMojo extends AbstractMojo {
 				}
 			}
 		}
-
 	}
 
 	private boolean containsFlaggedSyntax(String text) {
@@ -81,9 +80,7 @@ public class MyMojo extends AbstractMojo {
 
 			br.close();
 			fr.close();
-		} catch (FileNotFoundException ex) {
-			Logger.getLogger(MyMojo.class.getName()).log(Level.SEVERE, null, ex);
-		} catch (IOException ex) {
+		} catch (Exception ex) {
 			Logger.getLogger(MyMojo.class.getName()).log(Level.SEVERE, null, ex);
 		}
 		return sb.toString();
@@ -107,9 +104,7 @@ public class MyMojo extends AbstractMojo {
 			}
 			br.close();
 			fr.close();
-		} catch (FileNotFoundException ex) {
-			Logger.getLogger(MyMojo.class.getName()).log(Level.SEVERE, null, ex);
-		} catch (IOException ex) {
+		} catch (Exception ex) {
 			Logger.getLogger(MyMojo.class.getName()).log(Level.SEVERE, null, ex);
 		}
 		return sb.toString();
