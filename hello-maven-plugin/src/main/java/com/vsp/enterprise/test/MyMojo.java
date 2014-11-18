@@ -10,7 +10,7 @@ import org.apache.maven.plugins.annotations.*;
 public class MyMojo extends AbstractMojo {
 	public static final String RULE_NAME_MARKER = "Faux";
 	public static final String JAVA_NAME_MARKER = "Test";
-	private static final String[] flaggedDroolSyntax = {"import .*", "ruleflow-group .*"};
+	private static final String[] flaggedDroolSyntax = {"import .*", ".*ruleflow-group .*"};
 
 	@Parameter(defaultValue = "${basedir}/myrule.drl", property = "inputFile", required = true)
 	private String inputFile;
@@ -74,9 +74,11 @@ public class MyMojo extends AbstractMojo {
 			BufferedReader br = new BufferedReader(fr);
 			String line;
 
-			while ((line = br.readLine()) != null) 
+			while ((line = br.readLine()) != null) {
+				System.out.println(line);
 				if(!containsFlaggedSyntax(line))
 					sb.append(line).append("\n");
+			}
 
 			br.close();
 			fr.close();

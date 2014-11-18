@@ -40,11 +40,12 @@ public class FileNameManipulator {
 	 * @return
 	 */
 	public String postPendTextToFileName(String text) {
+		/*
 		Path path = Paths.get(qualifiedFileName);
-//		path = Paths.get("C:\\home\\joe\\foo");
-//		path = Paths.get("/home/joe/foo");
-//		path = Paths.get("c:/mydir/hello.drl");
-//path = Paths.get("sally\\bar");
+		path = Paths.get("C:\\home\\joe\\foo");
+		path = Paths.get("/home/joe/foo");
+		path = Paths.get("c:/mydir/hello.drl");
+		path = Paths.get("sally\\bar");
 		System.out.format("toString: %s%n", path.toString());
 		System.out.format("getFileName: %s%n", path.getFileName());
 		System.out.format("getName(0): %s%n", path.getName(0));
@@ -52,7 +53,7 @@ public class FileNameManipulator {
 		System.out.format("subpath(0,2): %s%n", path.subpath(0, 2));
 		System.out.format("getParent: %s%n", path.getParent());
 		System.out.format("getRoot: %s%n", path.getRoot());
-
+		*/
 		String[] filePathName = splitFileName();
 		StringBuilder sb = new StringBuilder();
 
