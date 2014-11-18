@@ -1,2 +1,2 @@
 # To fire off the plugin
-mvn com.vsp.enterprise.test:rulecopy:touch
+mvn com.vsp.enterprise.test:ruletest:create

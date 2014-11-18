@@ -6,8 +6,8 @@ import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.*;
 
-@Mojo(name = "touch", defaultPhase = LifecyclePhase.PROCESS_SOURCES)
-public class MyMojo extends AbstractMojo {
+@Mojo(name = "create", defaultPhase = LifecyclePhase.PROCESS_SOURCES)
+public class RuleCreateMojo extends AbstractMojo {
 	public static final String RULE_NAME_MARKER = "Faux";
 	public static final String JAVA_NAME_MARKER = "Test";
 	private static final String[] flaggedDroolSyntax = {"import .*", ".*ruleflow-group .*"};
@@ -83,7 +83,7 @@ public class MyMojo extends AbstractMojo {
 			br.close();
 			fr.close();
 		} catch (Exception ex) {
-			Logger.getLogger(MyMojo.class.getName()).log(Level.SEVERE, null, ex);
+			Logger.getLogger(RuleCreateMojo.class.getName()).log(Level.SEVERE, null, ex);
 		}
 		return sb.toString();
 	}
@@ -107,7 +107,7 @@ public class MyMojo extends AbstractMojo {
 			br.close();
 			fr.close();
 		} catch (Exception ex) {
-			Logger.getLogger(MyMojo.class.getName()).log(Level.SEVERE, null, ex);
+			Logger.getLogger(RuleCreateMojo.class.getName()).log(Level.SEVERE, null, ex);
 		}
 		return sb.toString();
 	}

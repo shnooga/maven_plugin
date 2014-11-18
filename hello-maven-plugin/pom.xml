@@ -3,11 +3,11 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.vsp.enterprise.test</groupId>
-	<artifactId>rulecopy</artifactId>
-	<version>1.0.4</version>
+	<artifactId>ruletest</artifactId>
+	<version>1.0.5</version>
 	<packaging>maven-plugin</packaging>
 
-	<name>Rule Copy Plugin</name>
+	<name>Rule Test Generator Plugin</name>
 
 	<!-- FIXME change it to the project's website -->
 	<url>http://maven.apache.org</url>
