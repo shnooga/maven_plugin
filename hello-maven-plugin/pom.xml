@@ -54,7 +54,7 @@
 				<artifactId>maven-plugin-plugin</artifactId>
 				<version>3.2</version>
 				<configuration>
-					<goalPrefix>rulecopy</goalPrefix>
+					<goalPrefix>ruletest</goalPrefix>
 					<skipErrorNoDescriptorsFound>true</skipErrorNoDescriptorsFound>
 				</configuration>
 				<executions>
@@ -111,7 +111,7 @@
 					</plugin>
 					<plugin>
 						<groupId>com.vsp.enterprise.test</groupId>
-						<artifactId>rulecopy</artifactId>
+						<artifactId>ruletest</artifactId>
 					</plugin>
 				</plugins>
 
