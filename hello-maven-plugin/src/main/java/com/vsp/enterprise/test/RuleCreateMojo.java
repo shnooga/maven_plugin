@@ -12,16 +12,19 @@ public class RuleCreateMojo extends AbstractMojo {
 	public static final String JAVA_NAME_MARKER = "Test";
 	private static final String[] flaggedDroolSyntax = {"import .*", ".*ruleflow-group .*"};
 
-	@Parameter(defaultValue = "${basedir}/myrule.drl", property = "inputFile", required = true)
+	@Parameter(defaultValue = "false", property = "overwriteExistJavaTest")
+	private boolean overwriteExistingJavaTest;
+
+	@Parameter(property = "inputFile", required = true)
 	private String inputFile;
 
-	@Parameter(defaultValue = "${basedir}/src/main/resources", property = "resourceDir", required = true)
+	@Parameter(defaultValue = "${basedir}/src/main/resources", property = "resourceDir")
 	private String resourceDirectory;
 
-	@Parameter(defaultValue = "${basedir}/src/test/java/com/vsp/enterprise/test", property = "javaTestDir", required = true)
+	@Parameter(defaultValue = "${basedir}/src/test/java/com/vsp/enterprise/test", property = "javaTestDir")
 	private String javaTestDirectory;
 
-	@Parameter(defaultValue = "${basedir}/src/main/resources/ruletesttemplate.txt", property = "templateFile", required = true)
+	@Parameter(defaultValue = "${basedir}/src/main/resources/ruletesttemplate.txt", property = "templateFile")
 	private String templateRuleFile;
 
 	public void execute() throws MojoExecutionException {
@@ -37,8 +40,15 @@ public class RuleCreateMojo extends AbstractMojo {
 
 		nameManipulator = new FileNameManipulator(javaTestDirectory + File.separator + fileNamePaths[1] + ".java");
 		fullyQualifiedFileName = nameManipulator.postPendTextToFileName(JAVA_NAME_MARKER);
-		String javaFileName = FileNameManipulator.splitFileName(fullyQualifiedFileName)[1];
-		writeFile(fullyQualifiedFileName, readJavaTemplateFile(templateRuleFile, javaFileName, ruleFileName));
+
+		File javaTestFile = new File(fullyQualifiedFileName);
+		if(overwriteExistingJavaTest || !javaTestFile.exists()){
+			String javaFileName = FileNameManipulator.splitFileName(fullyQualifiedFileName)[1];
+			writeFile(fullyQualifiedFileName, readJavaTemplateFile(templateRuleFile, javaFileName, ruleFileName));
+		} else {
+			System.out.println("" + fullyQualifiedFileName + " already exists!! To overwrite use -DoverwriteExistJavaTest=true");
+		}
+
 	}
 
 	private void writeFile(String fileName, String text) throws MojoExecutionException {
