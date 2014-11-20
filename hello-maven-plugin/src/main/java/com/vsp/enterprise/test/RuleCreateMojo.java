@@ -10,15 +10,15 @@ import org.apache.maven.plugins.annotations.*;
 public class RuleCreateMojo extends AbstractMojo {
 	public static final String RULE_NAME_MARKER = "Faux";
 	public static final String JAVA_NAME_MARKER = "Test";
-	private static final String[] flaggedDroolSyntax = {"import .*", ".*ruleflow-group .*"};
+	private static final String[] flaggedDroolSyntax = {"package .*", "import .*", ".*ruleflow-group .*"};
 
 	@Parameter(defaultValue = "false", property = "overwriteExistJavaTest")
 	private boolean overwriteExistingJavaTest;
 
-	@Parameter(property = "inputFile", required = true)
+	@Parameter(property = "inputFile")
 	private String inputFile;
 
-	@Parameter(defaultValue = "${basedir}/src/main/resources", property = "resourceDir")
+	@Parameter(defaultValue = "${basedir}/target", property = "resourceDir")
 	private String resourceDirectory;
 
 	@Parameter(defaultValue = "${basedir}/src/test/java/com/vsp/enterprise/test", property = "javaTestDir")
@@ -28,6 +28,8 @@ public class RuleCreateMojo extends AbstractMojo {
 	private String templateRuleFile;
 
 	public void execute() throws MojoExecutionException {
+		if(inputFile == null)
+			return;
 		FileNameManipulator nameManipulator = new FileNameManipulator(inputFile);
 		
 		nameManipulator = new FileNameManipulator(resourceDirectory + File.separator + nameManipulator.extractFileName());
@@ -63,7 +65,7 @@ public class RuleCreateMojo extends AbstractMojo {
 				try {
 					w.close();
 				} catch (IOException e) {
-					// ignore
+					e.printStackTrace();
 				}
 			}
 		}
@@ -77,7 +79,7 @@ public class RuleCreateMojo extends AbstractMojo {
 	}
 
 	private String readDroolFile(String fileName) {
-		StringBuilder sb = new StringBuilder();
+		StringBuilder sb = new StringBuilder("package com.vsp.rule;\n\n");
 
 		try {
 			FileReader fr = new FileReader(new File(fileName));
@@ -110,7 +112,8 @@ public class RuleCreateMojo extends AbstractMojo {
 				if(line.matches(".*public class RuleTestTemplate.*"))
 					sb.append("public class ").append(className).append(" extends RuleHarness {\n");
 				else if(line.matches(".*String getRuleFileName.*"))
-					sb.append("String getRuleFileName() { return \"").append(ruleName).append("\"; }\n");
+//					sb.append("public String getRuleFileName() { return \"").append(resourceDirectory).append(File.separator).append(ruleName).append("\"; }\n");
+					sb.append("public String getRuleFileName() { return \"").append(ruleName).append("\"; }\n");
 				else
 					sb.append(line).append("\n");
 			}
