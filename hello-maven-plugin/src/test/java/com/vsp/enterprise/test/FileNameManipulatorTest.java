@@ -70,4 +70,16 @@ public class FileNameManipulatorTest {
 		assertThat(filepaths[1], is("hello"));
 		assertThat(filepaths[2], is("drl"));
 	}
+	
+	@Test
+	public void testcreateJavaTestFileNameString() {
+		String fileName = OsUtils.isWindows() 
+						? "c:\\mydir\\is\\long\\hello.drl" 
+						: "/mydir/is/long/hello.drl";
+
+		manipulator = new FileNameManipulator(fileName, "com.huy.me");
+		String qualifiedFileName = manipulator.createJavaTestFileNameString("Test");
+		
+		assertThat(qualifiedFileName, is("com/huy/me/helloTest.java"));
+	}
 }

@@ -10,11 +10,17 @@ import java.util.StringTokenizer;
  * @author oogie
  */
 public class FileNameManipulator {
-
 	private String qualifiedFileName;
+	private String packageName;
 
-	public FileNameManipulator(String fileName) {
-		this.qualifiedFileName = fileName;
+	public FileNameManipulator(String fullyQualifiedFileName) {
+		this.qualifiedFileName = fullyQualifiedFileName;
+		replaceWithUnixSeparator();
+	}
+
+	public FileNameManipulator(String fullyQualifiedFileName, String packageName) {
+		this.qualifiedFileName = fullyQualifiedFileName;
+		this.packageName = packageName;
 		replaceWithUnixSeparator();
 	}
 
@@ -34,12 +40,21 @@ public class FileNameManipulator {
 	}
 
 	/**
+	 * @param text
+	 * @return 
+	 */
+	public String postPendTextToFileName(String text) {
+		return postPendTextToFileName(qualifiedFileName, text);
+	}
+
+	/**
 	 * /mydir/MyFile.txt -> /mydir/MyFileSomeText.txt
 	 *
+	 * @param qualifiedFileName
 	 * @param text
 	 * @return
 	 */
-	public String postPendTextToFileName(String text) {
+	public String postPendTextToFileName(String fullyQualifiedFileName, String text) {
 		/*
 		Path path = Paths.get(qualifiedFileName);
 		path = Paths.get("C:\\home\\joe\\foo");
@@ -54,7 +69,7 @@ public class FileNameManipulator {
 		System.out.format("getParent: %s%n", path.getParent());
 		System.out.format("getRoot: %s%n", path.getRoot());
 		*/
-		String[] filePathName = splitFileName();
+		String[] filePathName = splitFileName(fullyQualifiedFileName);
 		StringBuilder sb = new StringBuilder();
 
 		sb.append(filePathName[0]).append(File.separator).append(filePathName[1]).append(text).append(".").append(filePathName[2]);
@@ -92,8 +107,24 @@ public class FileNameManipulator {
 	}
 
 	/**
+	 * Converts the package name to a directory path and tack on the postFixFileNameMarker.
+	 * "com.vsp.rule" + "Test" -> "com/vsp/rule/myRuleTest.java"
+	 * @param postFixFileNameMarker
+	 * @return 
+	 */
+	public String createJavaTestFileNameString(String postFixFileNameMarker){
+//		Path path = Paths.get(qualifiedFileName);
+		StringBuilder sb = new StringBuilder(packageName.replace(".", "/"));
+		String[] fileNamePaths = splitFileName();
+		
+		sb.append(File.separator).append(fileNamePaths[1]).append(".java");
+		return postPendTextToFileName(sb.toString(), postFixFileNameMarker);
+	}
+
+	/**
 	 * "c:/mydir/foo.bar" -> ["c:/mydir", "foo", "bar"]
-	 *
+	 * 
+	 * @param fullFileName
 	 * @return A 3 element array of path, filename, file extension
 	 */
 	public static String[] splitFileName(String fullFileName) {
