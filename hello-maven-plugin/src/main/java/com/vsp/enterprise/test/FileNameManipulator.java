@@ -114,7 +114,7 @@ public class FileNameManipulator {
 	 */
 	public String createJavaTestFileNameString(String postFixFileNameMarker){
 //		Path path = Paths.get(qualifiedFileName);
-		StringBuilder sb = new StringBuilder(packageName.replace(".", "/"));
+		StringBuilder sb = new StringBuilder(packageName.replace(".", File.separator));
 		String[] fileNamePaths = splitFileName();
 		
 		sb.append(File.separator).append(fileNamePaths[1]).append(".java");

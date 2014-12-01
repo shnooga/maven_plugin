@@ -1,8 +1,9 @@
 package com.vsp.enterprise.test;
 
+import java.io.File;
+import static org.hamcrest.Matchers.*;
 import org.junit.*;
 import static org.junit.Assert.*;
-import static org.hamcrest.Matchers.*;
 
 /**
  *
@@ -76,10 +77,11 @@ public class FileNameManipulatorTest {
 		String fileName = OsUtils.isWindows() 
 						? "c:\\mydir\\is\\long\\hello.drl" 
 						: "/mydir/is/long/hello.drl";
+		String expectedFileName = "com" + File.separator + "huy" + File.separator + "me" + File.separator + "helloTest.java";
 
 		manipulator = new FileNameManipulator(fileName, "com.huy.me");
 		String qualifiedFileName = manipulator.createJavaTestFileNameString("Test");
 		
-		assertThat(qualifiedFileName, is("com/huy/me/helloTest.java"));
+		assertThat(qualifiedFileName, is(expectedFileName));
 	}
 }
