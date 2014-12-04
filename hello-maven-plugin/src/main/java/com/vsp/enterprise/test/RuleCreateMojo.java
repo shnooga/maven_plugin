@@ -1,6 +1,7 @@
 package com.vsp.enterprise.test;
 
 import com.vsp.enterprise.test.helper.FileNameManipulator;
+import com.vsp.enterprise.test.helper.FilesReader;
 import java.io.*;
 import java.util.logging.*;
 import org.apache.maven.plugin.AbstractMojo;
@@ -37,7 +38,8 @@ public class RuleCreateMojo extends AbstractMojo {
 		String fullyQualifiedFileName = nameManipulator.postPendTextToFileName(RULE_NAME_MARKER);
 		String ruleFileName = FileNameManipulator.extractFileName(fullyQualifiedFileName);
 
-		writeFile(fullyQualifiedFileName, readDroolFile(inputFile));
+		FilesReader fileReader = new FilesReader();
+		writeFile(fullyQualifiedFileName, fileReader.readDroolFile(inputFile));
 
 		String[] fileNamePaths = nameManipulator.splitFileName();
 
@@ -47,7 +49,7 @@ public class RuleCreateMojo extends AbstractMojo {
 		File javaTestFile = new File(fullyQualifiedFileName);
 		if(overwriteExistingJavaTest || !javaTestFile.exists()){
 			String javaFileName = FileNameManipulator.splitFileName(fullyQualifiedFileName)[1];
-			writeFile(fullyQualifiedFileName, readJavaTemplateFile(templateRuleFile, javaFileName, ruleFileName));
+			writeFile(fullyQualifiedFileName, fileReader.readJavaTemplateFile(templateRuleFile, javaFileName, ruleFileName));
 		} else {
 			System.out.println("" + fullyQualifiedFileName + " already exists!! To overwrite use -DoverwriteExistJavaTest=true");
 		}
@@ -72,6 +74,7 @@ public class RuleCreateMojo extends AbstractMojo {
 		}
 	}
 
+/*
 	private boolean containsFlaggedSyntax(String text) {
 		for (String syntax: flaggedDroolSyntax) 
 			if(text.matches(syntax))
@@ -130,4 +133,5 @@ public class RuleCreateMojo extends AbstractMojo {
 		}
 		return sb.toString();
 	}
+	*/
 }

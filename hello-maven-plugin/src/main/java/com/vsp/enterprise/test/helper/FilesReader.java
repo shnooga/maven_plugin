@@ -8,68 +8,9 @@ import java.util.logging.*;
 public class FilesReader {
 
 	private String javaPackage = "";
-	private List<String> importPackages = new ArrayList<String>();
-
+	private final List<String> importPackages = new ArrayList<String>();
 	private static final String[] flaggedDroolSyntax = {".*ruleflow-group .*"};
 
-	/*
-	 public static final String RULE_NAME_MARKER = "Faux";
-	 public static final String JAVA_NAME_MARKER = "Test";
-
-	 private boolean overwriteExistingJavaTest;
-
-	 private String inputFile;
-
-	 private String resourceDirectory;
-
-	 private String javaTestDirectory;
-
-	 private String templateRuleFile;
-
-	 public void execute() throws MojoExecutionException {
-	 if(inputFile == null)
-	 return;
-	 FileNameManipulator nameManipulator = new FileNameManipulator(inputFile);
-		
-	 nameManipulator = new FileNameManipulator(resourceDirectory + File.separator + nameManipulator.extractFileName());
-	 String fullyQualifiedFileName = nameManipulator.postPendTextToFileName(RULE_NAME_MARKER);
-	 String ruleFileName = FileNameManipulator.extractFileName(fullyQualifiedFileName);
-
-	 writeFile(fullyQualifiedFileName, readDroolFile(inputFile));
-
-	 String[] fileNamePaths = nameManipulator.splitFileName();
-
-	 nameManipulator = new FileNameManipulator(javaTestDirectory + File.separator + fileNamePaths[1] + ".java");
-	 fullyQualifiedFileName = nameManipulator.postPendTextToFileName(JAVA_NAME_MARKER);
-
-	 File javaTestFile = new File(fullyQualifiedFileName);
-	 if(overwriteExistingJavaTest || !javaTestFile.exists()){
-	 String javaFileName = FileNameManipulator.splitFileName(fullyQualifiedFileName)[1];
-	 writeFile(fullyQualifiedFileName, readJavaTemplateFile(templateRuleFile, javaFileName, ruleFileName));
-	 } else {
-	 System.out.println("" + fullyQualifiedFileName + " already exists!! To overwrite use -DoverwriteExistJavaTest=true");
-	 }
-
-	 }
-
-	 private void writeFile(String fileName, String text) throws MojoExecutionException {
-	 FileWriter w = null;
-	 try {
-	 w = new FileWriter(new File(fileName));
-	 w.write(text);
-	 } catch (IOException e) {
-	 throw new MojoExecutionException("Error creating file " + fileName, e);
-	 } finally {
-	 if (w != null) {
-	 try {
-	 w.close();
-	 } catch (IOException e) {
-	 e.printStackTrace();
-	 }
-	 }
-	 }
-	 }
-	 */
 	public String getJavaPackage() {
 		return javaPackage;
 	}
@@ -139,7 +80,7 @@ public class FilesReader {
 
 			while ((line = br.readLine()) != null) {
 				if (line.matches(".*public class RuleTestTemplate.*")) {
-					sb.append("\n\npublic class ").append(className).append(" extends RuleHarness {\n");
+					sb.append("public class ").append(className).append(" extends RuleHarness {\n");
 				} else if (line.matches(".*String getRuleFileName.*")) //					sb.append("public String getRuleFileName() { return \"").append(resourceDirectory).append(File.separator).append(ruleName).append("\"; }\n");
 				{
 					sb.append("\tpublic String getRuleFileName() { return \"").append(ruleName).append("\"; }\n");
