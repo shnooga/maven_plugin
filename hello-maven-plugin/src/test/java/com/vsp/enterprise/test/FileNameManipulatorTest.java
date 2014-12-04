@@ -79,10 +79,13 @@ public class FileNameManipulatorTest {
 		String fileName = OsUtils.isWindows() 
 						? "c:\\mydir\\is\\long\\hello.drl" 
 						: "/mydir/is/long/hello.drl";
-		String expectedFileName = "com" + File.separator + "huy" + File.separator + "me" + File.separator + "helloTest.java";
+		String javaTestDir = OsUtils.isWindows() 
+						? "c:\\mydir\\src\\test" 
+						: "/mydir/src/test";
+		String expectedFileName = javaTestDir + File.separator + "com" + File.separator + "huy" + File.separator + "me" + File.separator + "helloTest.java";
 
-		manipulator = new FileNameManipulator(fileName, "com.huy.me");
-		String qualifiedFileName = manipulator.createJavaTestFileNameString("Test");
+		manipulator = new FileNameManipulator(fileName);
+		String qualifiedFileName = manipulator.createJavaTestFileNameString(javaTestDir, "com.huy.me", "Test");
 		
 		assertThat(qualifiedFileName, is(expectedFileName));
 	}

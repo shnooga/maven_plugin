@@ -34,7 +34,7 @@ public class FilesReaderTest {
 		FilesReader instance = new FilesReader();
 
 		instance.readDroolFile(ruleFileName);
-		assertThat(instance.getJavaPackage(), is("package rules.entitlement.ProductEdit.Service"));
+		assertThat(instance.getJavaPackage(), is("rules.entitlement.ProductEdit.Service"));
 	}
 
 	/**

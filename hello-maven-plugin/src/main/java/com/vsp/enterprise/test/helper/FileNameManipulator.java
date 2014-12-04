@@ -11,16 +11,9 @@ import java.util.StringTokenizer;
  */
 public class FileNameManipulator {
 	private String qualifiedFileName;
-	private String packageName;
 
 	public FileNameManipulator(String fullyQualifiedFileName) {
 		this.qualifiedFileName = fullyQualifiedFileName;
-		replaceWithUnixSeparator();
-	}
-
-	public FileNameManipulator(String fullyQualifiedFileName, String packageName) {
-		this.qualifiedFileName = fullyQualifiedFileName;
-		this.packageName = packageName;
 		replaceWithUnixSeparator();
 	}
 
@@ -109,15 +102,18 @@ public class FileNameManipulator {
 	/**
 	 * Converts the package name to a directory path and tack on the postFixFileNameMarker.
 	 * "com.vsp.rule" + "Test" -> "com/vsp/rule/myRuleTest.java"
+	 * 
+	 * @param javaTestDir
+	 * @param packageName
 	 * @param postFixFileNameMarker
 	 * @return 
 	 */
-	public String createJavaTestFileNameString(String postFixFileNameMarker){
+	public String createJavaTestFileNameString(String javaTestDir, String packageName, String postFixFileNameMarker){
 //		Path path = Paths.get(qualifiedFileName);
-		StringBuilder sb = new StringBuilder(packageName.replace(".", File.separator));
+		StringBuilder sb = new StringBuilder(javaTestDir);
 		String[] fileNamePaths = splitFileName();
 		
-		sb.append(File.separator).append(fileNamePaths[1]).append(".java");
+		sb.append(File.separator).append(packageName.replace(".", File.separator)).append(File.separator).append(fileNamePaths[1]).append(".java");
 		return postPendTextToFileName(sb.toString(), postFixFileNameMarker);
 	}
 
