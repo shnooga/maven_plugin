@@ -1,5 +1,6 @@
 package com.vsp.enterprise.test;
 
+import com.vsp.enterprise.test.helper.FileNameManipulator;
 import java.io.*;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;

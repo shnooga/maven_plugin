@@ -1,5 +1,6 @@
 package com.vsp.enterprise.test;
 
+import com.vsp.enterprise.test.helper.FileNameManipulator;
 import java.io.*;
 import java.util.logging.*;
 import org.apache.maven.plugin.AbstractMojo;

@@ -1,12 +1,3 @@
-package com.vsp.rule;
-
-import org.drools.event.rule.DebugAgendaEventListener;
-import org.drools.event.rule.DebugWorkingMemoryEventListener;
-
-import static org.hamcrest.Matchers.*;
-import org.junit.*;
-import static org.junit.Assert.*;
-
 public class RuleTestTemplate extends RuleHarness {
 
 	public String getRuleFileName() { return "CLM00854_faux.drl"; }

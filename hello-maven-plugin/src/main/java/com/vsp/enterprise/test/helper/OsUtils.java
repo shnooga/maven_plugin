@@ -1,4 +1,4 @@
-package com.vsp.enterprise.test;
+package com.vsp.enterprise.test.helper;
 
 public class OsUtils {
 

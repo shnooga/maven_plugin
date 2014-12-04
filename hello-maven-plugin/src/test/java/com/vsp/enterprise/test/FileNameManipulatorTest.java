@@ -1,5 +1,7 @@
 package com.vsp.enterprise.test;
 
+import com.vsp.enterprise.test.helper.FileNameManipulator;
+import com.vsp.enterprise.test.helper.OsUtils;
 import java.io.File;
 import static org.hamcrest.Matchers.*;
 import org.junit.*;
