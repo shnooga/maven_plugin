@@ -14,7 +14,9 @@ public class DirectoryCreator {
 	}
 
 	public static void main(String[] args) {
-		File file = new File("C:/Directory1");
+		String singleDir = OsUtils.isWindows() ? "c:/trash/delme1" : "./delme1";
+		File file = new File(singleDir);
+
 		if (!file.exists()) {
 			if (file.mkdir()) {
 				System.out.println("Directory is created!");
@@ -23,7 +25,9 @@ public class DirectoryCreator {
 			}
 		}
 
-		File files = new File("C:/Directory2/Sub2/Sub-Sub2");
+		String multiDir = OsUtils.isWindows() ? "c:/trash/delme2/again/please" : "./delme2/again/please";
+		File files = new File(multiDir);
+
 		if (!files.exists()) {
 			if (files.mkdirs()) {
 				System.out.println("Multiple directories are created!");

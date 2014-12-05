@@ -14,11 +14,13 @@ import org.junit.Test;
 public class DirectoryCreatorTest {
 	private String singleDir;
 	private String multiDir;
+	private String multiDelDir;
 
 	@Before
 	public void setUp() {
-		singleDir = OsUtils.isWindows() ? "c:/trash/delme1" : "/opt/delme1";
-		multiDir = OsUtils.isWindows() ? "c:/trash/delme2/again/please" : "/opt/delme2/again/please";
+		singleDir 	= OsUtils.isWindows() ? "c:/trash/delme1" : "./delme1";
+		multiDir 	= OsUtils.isWindows() ? "c:/trash/delme2/again/please" : "./delme2/again/please";
+		multiDelDir = OsUtils.isWindows() ? "c:/trash/delme2" : "./delme2";
 	}
 
 	@After
@@ -27,7 +29,7 @@ public class DirectoryCreatorTest {
 
 		instance = new DirectoryCreator(singleDir);
 		instance.delDir();
-		instance = new DirectoryCreator(multiDir);
+		instance = new DirectoryCreator(multiDelDir);
 		instance.delDir();
 	}
 
@@ -50,25 +52,28 @@ public class DirectoryCreatorTest {
 	public void testMkdir() {
 		DirectoryCreator instance = new DirectoryCreator(singleDir);
 		assertThat(instance.mkdir(), is(true));
+		System.out.println("testMkdir");
 	}
 
 	@Test
 	public void testMkdirs() {
 		DirectoryCreator instance = new DirectoryCreator(multiDir);
 		assertThat(instance.mkdirs(), is(true));
+		System.out.println("hi");
 	}
 
 	@Test
 	public void testDelDir() {
-		String dir = OsUtils.isWindows() ? "c:/trash/junk/again/please" : "/opt/junk/again/please";
+		String dir = OsUtils.isWindows() ? "c:/trash/delme3/again/please" : "./delme3/again/please";
+		String delDir = OsUtils.isWindows() ? "c:/trash/delme3" : "./delme3";
 		DirectoryCreator instance;
 
 		instance = new DirectoryCreator(dir);
 		instance.mkdirs();
 
-		instance = new DirectoryCreator(dir);
+		instance = new DirectoryCreator(delDir);
 		instance.delDir();
-		File f = new File(dir);
+		File f = new File(delDir);
 		assertThat(f.exists(), is(false));
 	}
 
