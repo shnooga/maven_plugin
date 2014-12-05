@@ -31,32 +31,28 @@ public class RuleCreateMojo extends AbstractMojo {
 	public void execute() throws MojoExecutionException {
 		if(inputFile == null)
 			return;
-		FileNameManipulator nameManipulator = new FileNameManipulator(inputFile);
-		
-		nameManipulator = new FileNameManipulator(resourceDirectory + File.separator + nameManipulator.extractFileName());
-		String qualifiedRuleFileName = nameManipulator.postPendTextToFileName(RULE_NAME_MARKER);
+		FileNameManipulator manipulator = new FileNameManipulator(inputFile);
+		FileNameManipulator ruleFileNameManipulator = new FileNameManipulator(resourceDirectory + File.separator + manipulator.extractFileName());
+		String qualifiedRuleFileName = ruleFileNameManipulator.postPendTextToFileName(RULE_NAME_MARKER);
 		String ruleFileName = FileNameManipulator.extractFileName(qualifiedRuleFileName);
 
-		FilesReader fileReader = new FilesReader();
-		writeFile(qualifiedRuleFileName, fileReader.readDroolFile(inputFile));
+		FilesReader filesReader = new FilesReader();
+		writeFile(qualifiedRuleFileName, filesReader.readDroolFile(inputFile));
 
 		// Creation of java unit test file
-		String qualifiedJavaDir = javaTestDirectory + File.separator + fileReader.getJavaPackageAsPath();
-		String qualifiedJavaFileName = nameManipulator.createJavaTestFileNameString(qualifiedJavaDir, JAVA_NAME_MARKER);
+		String qualifiedJavaDir = javaTestDirectory + File.separator + filesReader.getJavaPackageAsPath();
+		String qualifiedJavaFileName = ruleFileNameManipulator.createJavaTestFileNameString(qualifiedJavaDir, JAVA_NAME_MARKER);
 		DirectoryCreator directoryUtil = new DirectoryCreator(qualifiedJavaDir);
 
 		directoryUtil.mkdirs();
-//		fullyQualifiedFileName = nameManipulator.createJavaTestFileNameString(javaTestDirectory, "", JAVA_NAME_MARKER);
 
 		File javaTestFile = new File(qualifiedJavaFileName);
-		System.out.println(qualifiedJavaFileName);
 		if(overwriteExistingJavaTest || !javaTestFile.exists()){
 			String javaFileName = FileNameManipulator.splitFileName(qualifiedJavaFileName)[1];
-			writeFile(qualifiedJavaFileName, fileReader.readJavaTemplateFile(templateRuleFile, javaFileName, ruleFileName));
+			writeFile(qualifiedJavaFileName, filesReader.readJavaTemplateFile(templateRuleFile, javaFileName, ruleFileName));
 		} else {
 			System.out.println("" + qualifiedJavaFileName + " already exists!! To overwrite use -DoverwriteExistJavaTest=true");
 		}
-
 	}
 
 	private void writeFile(String fileName, String text) throws MojoExecutionException {
