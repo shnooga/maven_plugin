@@ -1,7 +1,6 @@
 package com.vsp.enterprise.test;
 
-import com.vsp.enterprise.test.helper.FileNameManipulator;
-import com.vsp.enterprise.test.helper.FilesReader;
+import com.vsp.enterprise.test.helper.*;
 import java.io.*;
 import java.util.logging.*;
 import org.apache.maven.plugin.AbstractMojo;
@@ -35,22 +34,27 @@ public class RuleCreateMojo extends AbstractMojo {
 		FileNameManipulator nameManipulator = new FileNameManipulator(inputFile);
 		
 		nameManipulator = new FileNameManipulator(resourceDirectory + File.separator + nameManipulator.extractFileName());
-		String fullyQualifiedFileName = nameManipulator.postPendTextToFileName(RULE_NAME_MARKER);
-		String ruleFileName = FileNameManipulator.extractFileName(fullyQualifiedFileName);
+		String qualifiedRuleFileName = nameManipulator.postPendTextToFileName(RULE_NAME_MARKER);
+		String ruleFileName = FileNameManipulator.extractFileName(qualifiedRuleFileName);
 
 		FilesReader fileReader = new FilesReader();
-		writeFile(fullyQualifiedFileName, fileReader.readDroolFile(inputFile));
+		writeFile(qualifiedRuleFileName, fileReader.readDroolFile(inputFile));
 
-		fullyQualifiedFileName = nameManipulator.createJavaTestFileNameString(javaTestDirectory, fileReader.getJavaPackage(), JAVA_NAME_MARKER);
+		// Creation of java unit test file
+		String qualifiedJavaDir = javaTestDirectory + File.separator + fileReader.getJavaPackageAsPath();
+		String qualifiedJavaFileName = nameManipulator.createJavaTestFileNameString(qualifiedJavaDir, JAVA_NAME_MARKER);
+		DirectoryCreator directoryUtil = new DirectoryCreator(qualifiedJavaDir);
+
+		directoryUtil.mkdirs();
 //		fullyQualifiedFileName = nameManipulator.createJavaTestFileNameString(javaTestDirectory, "", JAVA_NAME_MARKER);
 
-		File javaTestFile = new File(fullyQualifiedFileName);
-		System.out.println(fullyQualifiedFileName);
+		File javaTestFile = new File(qualifiedJavaFileName);
+		System.out.println(qualifiedJavaFileName);
 		if(overwriteExistingJavaTest || !javaTestFile.exists()){
-			String javaFileName = FileNameManipulator.splitFileName(fullyQualifiedFileName)[1];
-			writeFile(fullyQualifiedFileName, fileReader.readJavaTemplateFile(templateRuleFile, javaFileName, ruleFileName));
+			String javaFileName = FileNameManipulator.splitFileName(qualifiedJavaFileName)[1];
+			writeFile(qualifiedJavaFileName, fileReader.readJavaTemplateFile(templateRuleFile, javaFileName, ruleFileName));
 		} else {
-			System.out.println("" + fullyQualifiedFileName + " already exists!! To overwrite use -DoverwriteExistJavaTest=true");
+			System.out.println("" + qualifiedJavaFileName + " already exists!! To overwrite use -DoverwriteExistJavaTest=true");
 		}
 
 	}

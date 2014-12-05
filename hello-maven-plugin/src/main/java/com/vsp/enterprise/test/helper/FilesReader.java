@@ -12,11 +12,19 @@ public class FilesReader {
 	private static final String[] flaggedDroolSyntax = {".*ruleflow-group .*"};
 
 	/**
-	 * @return The package structure only .ie "com.vsp.enterprise" 
+	 * @return The package structure only ie "com.vsp.enterprise" 
 	 */
 	public String getJavaPackage() {
 		String[] s = javaPackage.split(" ");
 		return (s.length > 0) ? s[s.length-1] : "";
+	}
+
+	/**
+	 * 
+	 * @return The package structure as a path ie. "com/vsp/enterprise" 
+	 */
+	public String getJavaPackageAsPath() {
+		return getJavaPackage().replace(".", File.separator);
 	}
 
 	private boolean containsFlaggedSyntax(String text) {

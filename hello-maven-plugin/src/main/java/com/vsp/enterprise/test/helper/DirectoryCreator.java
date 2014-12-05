@@ -26,6 +26,7 @@ public class DirectoryCreator {
 		}
 
 		String multiDir = OsUtils.isWindows() ? "c:/trash/delme2/again/please" : "./delme2/again/please";
+//		String multiDir = "/Users/oogie/projects/java/maven_plugin/hello-maven-plugin/src/test/java/rules/entitlement/ProductEdit/Service";
 		File files = new File(multiDir);
 
 		if (!files.exists()) {

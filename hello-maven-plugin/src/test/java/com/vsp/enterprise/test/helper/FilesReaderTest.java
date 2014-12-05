@@ -26,15 +26,20 @@ public class FilesReaderTest {
 	public void tearDown() {
 	}
 
-	/**
-	 * Test of getJavaPackage method, of class FilesReader.
-	 */
 	@Test
 	public void testGetJavaPackage() {
 		FilesReader instance = new FilesReader();
 
 		instance.readDroolFile(ruleFileName);
 		assertThat(instance.getJavaPackage(), is("rules.entitlement.ProductEdit.Service"));
+	}
+
+	@Test
+	public void testGetJavaPackageAsPath() {
+		FilesReader instance = new FilesReader();
+
+		instance.readDroolFile(ruleFileName);
+		assertThat(instance.getJavaPackageAsPath(), is("rules/entitlement/ProductEdit/Service"));
 	}
 
 	/**

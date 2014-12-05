@@ -52,14 +52,12 @@ public class DirectoryCreatorTest {
 	public void testMkdir() {
 		DirectoryCreator instance = new DirectoryCreator(singleDir);
 		assertThat(instance.mkdir(), is(true));
-		System.out.println("testMkdir");
 	}
 
 	@Test
 	public void testMkdirs() {
 		DirectoryCreator instance = new DirectoryCreator(multiDir);
 		assertThat(instance.mkdirs(), is(true));
-		System.out.println("hi");
 	}
 
 	@Test
