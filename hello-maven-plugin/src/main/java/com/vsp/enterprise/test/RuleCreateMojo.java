@@ -9,6 +9,7 @@ import org.apache.maven.plugins.annotations.*;
 
 @Mojo(name = "create", defaultPhase = LifecyclePhase.PROCESS_SOURCES)
 public class RuleCreateMojo extends AbstractMojo {
+
 	public static final String RULE_NAME_MARKER = "Faux";
 	public static final String JAVA_NAME_MARKER = "Test";
 	private static final String[] flaggedDroolSyntax = {".*ruleflow-group .*"};
@@ -28,31 +29,85 @@ public class RuleCreateMojo extends AbstractMojo {
 	@Parameter(defaultValue = "${basedir}/src/main/resources/ruletesttemplate.txt", property = "templateFile")
 	private String templateRuleFile;
 
-	public void execute() throws MojoExecutionException {
-		if(inputFile == null)
+	/**
+	 * This generates 2 files
+	 *   A slightly modified rule file from the original rule file 
+	 *   A java unit test file that will test the above modified rule file
+	 * NOTE:
+	 *   The generated modified rule file contains the same exact rule algorithm.
+	 *   Syntax unrelated to unit testing has been removed. ie "ruleflow-group"
+	 */
+	public void execute() {
+		if (inputFile == null) {
 			return;
-		FileNameManipulator manipulator = new FileNameManipulator(inputFile);
-		FileNameManipulator ruleFileNameManipulator = new FileNameManipulator(resourceDirectory + File.separator + manipulator.extractFileName());
-		String qualifiedRuleFileName = ruleFileNameManipulator.postPendTextToFileName(RULE_NAME_MARKER);
-		String ruleFileName = FileNameManipulator.extractFileName(qualifiedRuleFileName);
-
-		FilesReader filesReader = new FilesReader();
-		writeFile(qualifiedRuleFileName, filesReader.readDroolFile(inputFile));
-
-		// Creation of java unit test file
-		String qualifiedJavaDir = javaTestDirectory + File.separator + filesReader.getJavaPackageAsPath();
-		String qualifiedJavaFileName = ruleFileNameManipulator.createJavaTestFileNameString(qualifiedJavaDir, JAVA_NAME_MARKER);
-		DirectoryCreator directoryUtil = new DirectoryCreator(qualifiedJavaDir);
-
-		directoryUtil.mkdirs();
-
-		File javaTestFile = new File(qualifiedJavaFileName);
-		if(overwriteExistingJavaTest || !javaTestFile.exists()){
-			String javaFileName = FileNameManipulator.splitFileName(qualifiedJavaFileName)[1];
-			writeFile(qualifiedJavaFileName, filesReader.readJavaTemplateFile(templateRuleFile, javaFileName, ruleFileName));
-		} else {
-			System.out.println("" + qualifiedJavaFileName + " already exists!! To overwrite use -DoverwriteExistJavaTest=true");
 		}
+		FilesReader filesReader = new FilesReader();
+		String qualifiedFauxRuleFileName = createFauxRuleFile(filesReader, inputFile);
+		String qualifiedUnitTestFile     = createUnitTestFile(filesReader, qualifiedFauxRuleFileName);
+	}
+
+	/**
+	 * @return 
+	 *   An object that represents the qualified file name "./src/main/resources/myOrigRule.drl"
+	 */
+	private FileNameManipulator createRuleFileNameManipulator() {
+		FileNameManipulator manipulator = new FileNameManipulator(inputFile);
+		return new FileNameManipulator(resourceDirectory + File.separator + manipulator.extractFileName());
+	}
+
+	/**
+	 * @param filesReader
+	 * @param qualifiedFauxRuleFileName
+	 *   "./src/main/resources/myOrigRuleFaux.drl"
+	 * @return 
+	 *   The freshly generated qualified unit test file name, ie "./src/test/java/myOrigRuleTest.java" 
+	 *   An empty string for failure.
+	 */
+	private String createUnitTestFile(FilesReader filesReader, String qualifiedFauxRuleFileName) {
+		String qualifiedJavaFileName = "";
+		try {
+
+			String qualifiedJavaDir = javaTestDirectory + File.separator + filesReader.getJavaPackageAsPath();
+			DirectoryCreator directoryUtil = new DirectoryCreator(qualifiedJavaDir);
+
+			directoryUtil.mkdirs();
+
+			FileNameManipulator ruleFileNameManipulator = createRuleFileNameManipulator();
+			qualifiedJavaFileName = ruleFileNameManipulator.createJavaTestFileNameString(qualifiedJavaDir, JAVA_NAME_MARKER);
+			
+			File javaTestFile = new File(qualifiedJavaFileName);
+			if (overwriteExistingJavaTest || !javaTestFile.exists()) {
+				String javaFileName = FileNameManipulator.splitFileName(qualifiedJavaFileName)[1];
+				String fauxRuleFileName = FileNameManipulator.extractFileName(qualifiedFauxRuleFileName);
+				writeFile(qualifiedJavaFileName, filesReader.readJavaTemplateFile(templateRuleFile, javaFileName, fauxRuleFileName));
+			} else {
+				System.out.println("" + qualifiedJavaFileName + " already exists!! To overwrite use -DoverwriteExistJavaTest=true");
+			}
+		} catch (Exception ex) {
+			Logger.getLogger(RuleCreateMojo.class.getName()).log(Level.SEVERE, null, ex);
+		}
+		return qualifiedJavaFileName;
+	}
+
+	/**
+	 * @param filesReader
+	 * @param origRuleFileName 
+	 *   "./some/dir/myOrigRule.drl"
+	 * @return 
+	 *   The freshly generated rule file name, ie "./src/main/resources/myOrigRuleFaux.drl" 
+	 *   An empty string for failure.
+	 */
+	private String createFauxRuleFile(FilesReader filesReader, String origRuleFileName) {
+		String qualifiedFauxRuleFileName = "";
+
+		try {
+			qualifiedFauxRuleFileName = createRuleFileNameManipulator().postPendTextToFileName(RULE_NAME_MARKER);
+			writeFile(qualifiedFauxRuleFileName, filesReader.readDroolFile(origRuleFileName));
+
+		} catch (Exception ex) {
+			Logger.getLogger(RuleCreateMojo.class.getName()).log(Level.SEVERE, null, ex);
+		}
+		return qualifiedFauxRuleFileName;
 	}
 
 	private void writeFile(String fileName, String text) throws MojoExecutionException {

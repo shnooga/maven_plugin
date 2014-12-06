@@ -70,16 +70,15 @@ public class FileNameManipulator {
 	}
 
 	/**
-	 * /mydir/MyFile.txt -> MyFileSomeText
-	 *
-	 * @param text
-	 * @return
+	 * @return /mydir/MyFile.txt -> MyFile.txt
 	 */
 	public String extractFileName() {
-		Path path = Paths.get(qualifiedFileName);
-		return path.getFileName().toString();
+		return extractFileName(qualifiedFileName);
 	}
 
+	/**
+	 * @return /mydir/MyFile.txt -> MyFile.txt
+	 */
 	public static String extractFileName(String fullFileName) {
 		return Paths.get(fullFileName).getFileName().toString();
 	}
@@ -108,7 +107,6 @@ public class FileNameManipulator {
 	 * @return 
 	 */
 	public String createJavaTestFileNameString(String javaTestDir, String postFixFileNameMarker){
-//		Path path = Paths.get(qualifiedFileName);
 		StringBuilder sb = new StringBuilder(javaTestDir);
 		String[] fileNamePaths = splitFileName();
 		

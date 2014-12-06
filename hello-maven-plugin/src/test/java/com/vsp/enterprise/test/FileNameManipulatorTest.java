@@ -14,9 +14,6 @@ import static org.junit.Assert.*;
 public class FileNameManipulatorTest {
 	private FileNameManipulator manipulator;
 	
-	/**
-	 * Test of postPendTextToFileName method, of class FileNameManipulator.
-	 */
 	@Test
 	public void testPostPendTextToFileName() {
 		String fileName = OsUtils.isWindows() 
@@ -29,9 +26,6 @@ public class FileNameManipulatorTest {
 		assertThat(manipulator.postPendTextToFileName("bogus"), is(expectFileName));
 	}
 
-	/**
-	 * Test of extractFileName method, of class FileNameManipulator.
-	 */
 	@Test
 	public void testExtractFileName() {
 		String fileName = OsUtils.isWindows() 
