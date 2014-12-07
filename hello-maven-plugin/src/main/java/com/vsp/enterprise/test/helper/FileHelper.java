@@ -4,8 +4,9 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.*;
+import org.apache.maven.plugin.MojoExecutionException;
 
-public class FilesReader {
+public class FileHelper {
 
 	private String javaPackage = "";
 	private final List<String> importPackages = new ArrayList<String>();
@@ -65,7 +66,7 @@ public class FilesReader {
 			br.close();
 			fr.close();
 		} catch (Exception ex) {
-			Logger.getLogger(FilesReader.class.getName()).log(Level.SEVERE, null, ex);
+			Logger.getLogger(FileHelper.class.getName()).log(Level.SEVERE, null, ex);
 		}
 		return sb.toString();
 	}
@@ -103,8 +104,26 @@ public class FilesReader {
 			br.close();
 			fr.close();
 		} catch (Exception ex) {
-			Logger.getLogger(FilesReader.class.getName()).log(Level.SEVERE, null, ex);
+			Logger.getLogger(FileHelper.class.getName()).log(Level.SEVERE, null, ex);
 		}
 		return sb.toString();
+	}
+
+	public void writeFile(String fileName, String text) throws MojoExecutionException {
+		FileWriter w = null;
+		try {
+			w = new FileWriter(new File(fileName));
+			w.write(text);
+		} catch (IOException e) {
+			throw new MojoExecutionException("Error creating file " + fileName, e);
+		} finally {
+			if (w != null) {
+				try {
+					w.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
 	}
 }
