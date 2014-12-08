@@ -41,9 +41,10 @@ public class FileHelperTest {
 	@Test
 	public void testGetJavaPackageAsPath() {
 		FileHelper instance = new FileHelper();
+		String expectedPath = "rules" + File.separator + "entitlement" + File.separator + "ProductEdit" + File.separator + "Service";
 
 		instance.readDroolFile(ruleFileName);
-		assertThat(instance.getJavaPackageAsPath(), is("rules/entitlement/ProductEdit/Service"));
+		assertThat(instance.getJavaPackageAsPath(), is(expectedPath));
 	}
 
 	/**
