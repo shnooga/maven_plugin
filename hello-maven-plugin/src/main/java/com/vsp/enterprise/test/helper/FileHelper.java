@@ -85,32 +85,29 @@ public class FileHelper {
 	 *   ie "c:/src/main/resources/rulestemplate.txt"
 	 * @param className
 	 *   The java class name of this java unit test file. ie "MyRuleTest"
-	 * @param ruleName
+	 * @param ruleFileName
 	 *   Fully qualified name of a rule file. ie "c:/myproj/target/myruleFaux.drl" 
 	 * @return 
 	 *   A string comprised of the given rule file
 	 */
-	public String readJavaTemplateFile(String templateFileName, String className, String ruleName) {
+	public String readJavaTemplateFile(String templateFileName, String className, String ruleFileName) {
 		StringBuilder sb = new StringBuilder();
 
 		try {
 			sb.append(javaPackage).append("\n\n");
-			for (String s : importPackages) {
+			for (String s : importPackages) 
 				sb.append(s).append("\n");
-			} 
 			FileReader fr = new FileReader(new File(templateFileName));
 			BufferedReader br = new BufferedReader(fr);
 			String line;
 
 			while ((line = br.readLine()) != null) {
-				if (line.matches(".*public class RuleTestTemplate.*")) {
+				if (line.matches(".*public class RuleTestTemplate.*"))
 					sb.append("public class ").append(className).append(" extends RuleHarness {\n");
-				} else if (line.matches(".*String getRuleFileName.*")) {
-//					sb.append("public String getRuleFileName() { return \"").append(resourceDirectory).append(File.separator).append(ruleName).append("\"; }\n");
-					sb.append("\tpublic String getRuleFileName() { return \"").append(ruleName).append("\"; }\n");
-				} else {
+				else if (line.matches(".*String getRuleFileName.*"))
+					sb.append("\tpublic String getRuleFileName() { return \"").append(ruleFileName).append("\"; }\n");
+				else
 					sb.append(line).append("\n");
-				}
 			}
 			br.close();
 			fr.close();

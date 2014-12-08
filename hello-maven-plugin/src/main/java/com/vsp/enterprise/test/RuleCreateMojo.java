@@ -37,12 +37,11 @@ public class RuleCreateMojo extends AbstractMojo {
 	 *   Syntax unrelated to unit testing has been removed. ie "ruleflow-group"
 	 */
 	public void execute() {
-		if (inputFile == null) {
+		if (inputFile == null)
 			return;
-		}
-		FileHelper fileHelper = new FileHelper();
-		String qualifiedFauxRuleFileName = createFauxRuleFile(fileHelper, inputFile);
-		String qualifiedUnitTestFile     = createUnitTestFile(fileHelper, qualifiedFauxRuleFileName);
+		FileHelper fileHelper   = new FileHelper();
+		String fauxRuleFileName = createFauxRuleFile(fileHelper, inputFile);
+		String javaTestFileName = createUnitTestFile(fileHelper, fauxRuleFileName);
 	}
 
 	/**
@@ -78,8 +77,7 @@ public class RuleCreateMojo extends AbstractMojo {
 			File javaTestFile = new File(qualifiedJavaFileName);
 			if (overwriteExistingJavaTest || !javaTestFile.exists()) {
 				String javaFileName = FileNameManipulator.splitFileName(qualifiedJavaFileName)[1];
-				String fauxRuleFileName = FileNameManipulator.extractFileName(qualifiedFauxRuleFileName);
-				fileHelper.writeFile(qualifiedJavaFileName, fileHelper.readJavaTemplateFile(templateRuleFile, javaFileName, fauxRuleFileName));
+				fileHelper.writeFile(qualifiedJavaFileName, fileHelper.readJavaTemplateFile(templateRuleFile, javaFileName, qualifiedFauxRuleFileName));
 			} else {
 				System.out.println("" + qualifiedJavaFileName + " already exists!! To overwrite use -DoverwriteExistJavaTest=true");
 			}
