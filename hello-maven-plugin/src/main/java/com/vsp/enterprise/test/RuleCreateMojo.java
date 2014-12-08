@@ -4,7 +4,6 @@ import com.vsp.enterprise.test.helper.*;
 import java.io.*;
 import java.util.logging.*;
 import org.apache.maven.plugin.AbstractMojo;
-import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.*;
 
 @Mojo(name = "create", defaultPhase = LifecyclePhase.PROCESS_SOURCES)
@@ -57,6 +56,7 @@ public class RuleCreateMojo extends AbstractMojo {
 
 	/**
 	 * @param fileHelper
+	 *   A helper object that reads & write files.
 	 * @param qualifiedFauxRuleFileName
 	 *   "./src/main/resources/myOrigRuleFaux.drl"
 	 * @return 
@@ -91,6 +91,7 @@ public class RuleCreateMojo extends AbstractMojo {
 
 	/**
 	 * @param fileHelper
+	 *   A helper object that reads & write files.
 	 * @param origRuleFileName 
 	 *   "./some/dir/myOrigRule.drl"
 	 * @return 

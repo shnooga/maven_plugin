@@ -22,7 +22,8 @@ public class FileHelper {
 
 	/**
 	 * 
-	 * @return The package structure as a path ie. "com/vsp/enterprise" 
+	 * @return The package structure as a path 
+	 * ie. "com.vsp.enterprise" -> "com/vsp/enterprise" 
 	 */
 	public String getJavaPackageAsPath() {
 		return getJavaPackage().replace(".", File.separator);
@@ -37,11 +38,19 @@ public class FileHelper {
 		return false;
 	}
 
-	public String readDroolFile(String fileName) {
+	/**
+	 * Read a give rule file name then create a modified version of it.
+	 * 
+	 * @param ruleFileName
+	 *   Fully qualified name of the rule file. ie "c:/mydir/somerule.drl"
+	 * @return 
+	 *   A string comprised of the given rule file
+	 */
+	public String readDroolFile(String ruleFileName) {
 		StringBuilder sb = new StringBuilder();
 
 		try {
-			FileReader fr = new FileReader(new File(fileName));
+			FileReader fr = new FileReader(new File(ruleFileName));
 			BufferedReader br = new BufferedReader(fr);
 			String line;
 
@@ -59,8 +68,6 @@ public class FileHelper {
 				if (!containsFlaggedSyntax(line)) {
 					sb.append(line).append("\n");
 				}
-//				if(line.matches("package .*"))
-//					javaTestDirectory = createJavaTestDirString(line)
 			}
 
 			br.close();
@@ -72,30 +79,34 @@ public class FileHelper {
 	}
 
 	/**
-	 *
-	 * @param fileName
+	 * Read the java template file then create a modified version of it.
+	 * @param templateFileName
+	 *   Fully qualified name of the template file. 
+	 *   ie "c:/src/main/resources/rulestemplate.txt"
 	 * @param className
+	 *   The java class name of this java unit test file. ie "MyRuleTest"
 	 * @param ruleName
-	 * @return
+	 *   Fully qualified name of a rule file. ie "c:/myproj/target/myruleFaux.drl" 
+	 * @return 
+	 *   A string comprised of the given rule file
 	 */
-	public String readJavaTemplateFile(String fileName, String className, String ruleName) {
+	public String readJavaTemplateFile(String templateFileName, String className, String ruleName) {
 		StringBuilder sb = new StringBuilder();
 
 		try {
 			sb.append(javaPackage).append("\n\n");
 			for (String s : importPackages) {
 				sb.append(s).append("\n");
-			}
-
-			FileReader fr = new FileReader(new File(fileName));
+			} 
+			FileReader fr = new FileReader(new File(templateFileName));
 			BufferedReader br = new BufferedReader(fr);
 			String line;
 
 			while ((line = br.readLine()) != null) {
 				if (line.matches(".*public class RuleTestTemplate.*")) {
 					sb.append("public class ").append(className).append(" extends RuleHarness {\n");
-				} else if (line.matches(".*String getRuleFileName.*")) //					sb.append("public String getRuleFileName() { return \"").append(resourceDirectory).append(File.separator).append(ruleName).append("\"; }\n");
-				{
+				} else if (line.matches(".*String getRuleFileName.*")) {
+//					sb.append("public String getRuleFileName() { return \"").append(resourceDirectory).append(File.separator).append(ruleName).append("\"; }\n");
 					sb.append("\tpublic String getRuleFileName() { return \"").append(ruleName).append("\"; }\n");
 				} else {
 					sb.append(line).append("\n");
@@ -109,6 +120,14 @@ public class FileHelper {
 		return sb.toString();
 	}
 
+	/**
+	 * Create a file with the text data.
+	 * @param fileName
+	 *   Fully qualified file name. 
+	 * @param text
+	 *   Data to write in the file.
+	 * @throws MojoExecutionException 
+	 */
 	public void writeFile(String fileName, String text) throws MojoExecutionException {
 		FileWriter w = null;
 		try {
