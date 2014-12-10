@@ -59,7 +59,7 @@ public class FileHelper {
 			while ((line = br.readLine()) != null) {
 				System.out.println(line);
 				if (line.matches(".*package .*")) {
-					javaPackage = line;
+					javaPackage = line + ";";
 				}
 				if (line.matches(".*import .*")) {
 					importPackages.add(line);
@@ -114,6 +114,7 @@ public class FileHelper {
 		} catch (Exception ex) {
 			Logger.getLogger(FileHelper.class.getName()).log(Level.SEVERE, null, ex);
 		}
+		System.out.println(sb);
 		return sb.toString();
 	}
 
