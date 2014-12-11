@@ -3,6 +3,7 @@ package com.vsp.enterprise.test.helper;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringTokenizer;
 import java.util.logging.*;
 import org.apache.maven.plugin.MojoExecutionException;
 
@@ -151,5 +152,55 @@ public class FileHelper {
 				}
 			}
 		}
+	}
+
+	/**
+	 * My quick & dirty way to generate a pojo from an existing EJB file.
+	 * @param fileName
+	 * @return 
+	 */
+	public String readJavaBeanFile(String fileName) {
+		StringBuilder sb = new StringBuilder();
+
+		try {
+			FileReader fr = new FileReader(new File(fileName));
+			BufferedReader br = new BufferedReader(fr);
+			String line;
+
+//	public void setBenefit(com.vsp.enterprise.busobj.entity.benefit.Benefit aBenefit) {
+			while ((line = br.readLine()) != null) {
+				if (line.matches(".*public void set.*")) { 
+					System.out.println(line);
+					sb.append("\tprivate ");
+					int beginIndex = line.indexOf("set");
+					int midIndex = line.indexOf("(");
+					int endIndex = line.indexOf(")");
+
+					StringTokenizer tokenizer = new StringTokenizer(line.substring(midIndex + 1, endIndex), " ");
+					sb.append(tokenizer.nextToken());
+					String varName = line.substring(beginIndex +3, midIndex);
+					sb.append(" ");
+					sb.append(varName);
+					sb.append(";\n");
+				}
+			}
+
+			br.close();
+			fr.close();
+		} catch (Exception ex) {
+			Logger.getLogger(FileHelper.class.getName()).log(Level.SEVERE, null, ex);
+		}
+		return sb.toString();
+	}
+
+	public static void main(String[] args) {
+		FileHelper instance = new FileHelper();
+
+		System.out.println(instance.readJavaBeanFile("./ClaimContainer.java"));
+		if (args.length > 0) {
+			instance.readJavaBeanFile(args[0]);
+		}
+
+
 	}
 }
