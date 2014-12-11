@@ -36,7 +36,6 @@ public class DirectoryCreator {
 				System.out.println("Failed to create multiple directories!");
 			}
 		}
-
 	}
 
 	public boolean exists() {

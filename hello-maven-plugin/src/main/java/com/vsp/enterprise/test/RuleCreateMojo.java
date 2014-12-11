@@ -29,24 +29,24 @@ public class RuleCreateMojo extends AbstractMojo {
 	private String templateRuleFile;
 
 	/**
-	 * This generates 2 files
-	 *   A slightly modified rule file from the original rule file 
-	 *   A java unit test file that will test the above modified rule file
-	 * NOTE:
-	 *   The generated modified rule file contains the same exact rule algorithm.
-	 *   Syntax unrelated to unit testing has been removed. ie "ruleflow-group"
+	 * This generates 2 files A slightly modified rule file from the original
+	 * rule file A java unit test file that will test the above modified rule
+	 * file NOTE: The generated modified rule file contains the same exact rule
+	 * algorithm. Syntax unrelated to unit testing has been removed. ie
+	 * "ruleflow-group"
 	 */
 	public void execute() {
-		if (inputFile == null)
+		if (inputFile == null) {
 			return;
-		FileHelper fileHelper   = new FileHelper();
+		}
+		FileHelper fileHelper = new FileHelper();
 		String fauxRuleFileName = createFauxRuleFile(fileHelper, inputFile);
 		String javaTestFileName = createUnitTestFile(fileHelper, fauxRuleFileName);
 	}
 
 	/**
-	 * @return 
-	 *   An object that represents the qualified file name "./src/main/resources/myOrigRule.drl"
+	 * @return An object that represents the qualified file name
+	 * "./src/main/resources/myOrigRule.drl"
 	 */
 	private FileNameManipulator createRuleFileNameManipulator() {
 		FileNameManipulator manipulator = new FileNameManipulator(inputFile);
@@ -54,18 +54,15 @@ public class RuleCreateMojo extends AbstractMojo {
 	}
 
 	/**
-	 * @param fileHelper
-	 *   A helper object that reads & write files.
+	 * @param fileHelper A helper object that reads & write files.
 	 * @param qualifiedFauxRuleFileName
-	 *   "./src/main/resources/myOrigRuleFaux.drl"
-	 * @return 
-	 *   The freshly generated qualified unit test file name, ie "./src/test/java/myOrigRuleTest.java" 
-	 *   An empty string for failure.
+	 * "./src/main/resources/myOrigRuleFaux.drl"
+	 * @return The freshly generated qualified unit test file name, ie
+	 * "./src/test/java/myOrigRuleTest.java" An empty string for failure.
 	 */
 	private String createUnitTestFile(FileHelper fileHelper, String qualifiedFauxRuleFileName) {
 		String qualifiedJavaFileName = "";
 		try {
-
 			String qualifiedJavaDir = javaTestDirectory + File.separator + fileHelper.getJavaPackageAsPath();
 			DirectoryCreator directoryUtil = new DirectoryCreator(qualifiedJavaDir);
 
@@ -73,7 +70,7 @@ public class RuleCreateMojo extends AbstractMojo {
 
 			FileNameManipulator ruleFileNameManipulator = createRuleFileNameManipulator();
 			qualifiedJavaFileName = ruleFileNameManipulator.createJavaTestFileNameString(qualifiedJavaDir, JAVA_NAME_MARKER);
-			
+
 			File javaTestFile = new File(qualifiedJavaFileName);
 			if (overwriteExistingJavaTest || !javaTestFile.exists()) {
 				String javaFileName = FileNameManipulator.splitFileName(qualifiedJavaFileName)[1];
@@ -88,13 +85,10 @@ public class RuleCreateMojo extends AbstractMojo {
 	}
 
 	/**
-	 * @param fileHelper
-	 *   A helper object that reads & write files.
-	 * @param origRuleFileName 
-	 *   "./some/dir/myOrigRule.drl"
-	 * @return 
-	 *   The freshly generated rule file name, ie "./src/main/resources/myOrigRuleFaux.drl" 
-	 *   An empty string for failure.
+	 * @param fileHelper A helper object that reads & write files.
+	 * @param origRuleFileName "./some/dir/myOrigRule.drl"
+	 * @return The freshly generated rule file name, ie
+	 * "./src/main/resources/myOrigRuleFaux.drl" An empty string for failure.
 	 */
 	private String createFauxRuleFile(FileHelper fileHelper, String origRuleFileName) {
 		String qualifiedFauxRuleFileName = "";
