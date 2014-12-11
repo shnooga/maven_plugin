@@ -114,4 +114,53 @@ public class FileHelperTest {
 			}
 		}
 	}
+
+	@Test
+	public void testStripSemiColon_pos() {
+		FileHelper instance = new FileHelper();
+		String result = instance.stripSemiColon("lorem ipsum;");
+
+		assertThat(result, is("lorem ipsum"));
+	}
+
+	@Test
+	public void testStripSemiColon_neg() {
+		FileHelper instance = new FileHelper();
+		String result = instance.stripSemiColon("lorem ipsum");
+
+		assertThat(result, is("lorem ipsum"));
+	}
+
+	@Test
+	public void testStripSemiColon_lead_space_pos() {
+		FileHelper instance = new FileHelper();
+		String result = instance.stripSemiColon("  bon jour;");
+
+		assertThat(result, is("bon jour"));
+	}
+
+	@Test
+	public void testStripSemiColon_lead_space_neg() {
+		FileHelper instance = new FileHelper();
+		String result = instance.stripSemiColon("  lorem ipsum");
+
+		assertThat(result, is("lorem ipsum"));
+	}
+
+	@Test
+	public void testStripSemiColon_trail_space_pos() {
+		FileHelper instance = new FileHelper();
+		String result = instance.stripSemiColon("package com.my.app.Boom;    ");
+
+		assertThat(result, is("package com.my.app.Boom"));
+	}
+
+	@Test
+	public void testStripSemiColon_trail_space_neg() {
+		FileHelper instance = new FileHelper();
+		String result = instance.stripSemiColon("package com.my.app.Boom    ");
+
+		assertThat(result, is("package com.my.app.Boom"));
+	}
+
 }
