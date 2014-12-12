@@ -19,8 +19,8 @@ public class RuleCreateMojo extends AbstractMojo {
 	@Parameter(property = "inputFile")
 	private String inputFile;
 
-	@Parameter(defaultValue = "${basedir}/target", property = "resourceDir")
-	private String resourceDirectory;
+	@Parameter(defaultValue = "./target", property = "resourceDir")
+	private String fauxRuleDirectory;
 
 	@Parameter(defaultValue = "${basedir}/src/test/java", property = "javaTestDir")
 	private String javaTestDirectory;
@@ -46,11 +46,11 @@ public class RuleCreateMojo extends AbstractMojo {
 
 	/**
 	 * @return An object that represents the qualified file name
-	 * "./src/main/resources/myOrigRule.drl"
+	 * "./target/myOrigRule.drl"
 	 */
 	private FileNameManipulator createRuleFileNameManipulator() {
 		FileNameManipulator manipulator = new FileNameManipulator(inputFile);
-		return new FileNameManipulator(resourceDirectory + File.separator + manipulator.extractFileName());
+		return new FileNameManipulator(fauxRuleDirectory + File.separator + manipulator.extractFileName());
 	}
 
 	/**
@@ -85,15 +85,22 @@ public class RuleCreateMojo extends AbstractMojo {
 	}
 
 	/**
-	 * @param fileHelper A helper object that reads & write files.
-	 * @param origRuleFileName "./some/dir/myOrigRule.drl"
-	 * @return The freshly generated rule file name, ie
-	 * "./src/main/resources/myOrigRuleFaux.drl" An empty string for failure.
+	 * @param fileHelper 
+	 *   A helper object that reads & write files.
+	 * @param origRuleFileName 
+	 *   "./some/dir/myRule.drl"
+	 * @return 
+	 *   The freshly generated rule file name, ie
+	 *   "./target/myRuleFaux.drl" 
+	 *   An empty string for failure.
 	 */
 	private String createFauxRuleFile(FileHelper fileHelper, String origRuleFileName) {
 		String qualifiedFauxRuleFileName = "";
 
 		try {
+			DirectoryCreator directoryUtil = new DirectoryCreator(fauxRuleDirectory);
+
+			directoryUtil.mkdirs();
 			qualifiedFauxRuleFileName = createRuleFileNameManipulator().postPendTextToFileName(RULE_NAME_MARKER);
 			fileHelper.writeFile(qualifiedFauxRuleFileName, fileHelper.readDroolFile(origRuleFileName));
 

@@ -1,0 +1,34 @@
+package rules.claim.ProductEdit.ProductEditsDeny_TimelyFiling
+
+import com.vsp.enterprise.busobj.entity.claim.ClaimBenefitRequest;
+import com.vsp.enterprise.busobj.entity.claim.Claim;
+import com.vsp.enterprise.busobj.entity.claim.ClaimLine;
+import com.vsp.enterprise.busobj.entity.performedservice.PerformedService;
+import com.vsp.enterprise.busobj.entity.member.Member;
+import com.vsp.enterprise.busobj.entity.group.Group;
+import com.vsp.enterprise.busobjsupport.claim.proposal.ClaimContext;
+import com.vsp.enterprise.busobj.entity.claim.AttachmentType;
+import com.vsp.enterprise.busobjsupport.claim.rule.ClaimRuleContext;
+
+rule "CLM00642_NonMedicaid"
+no-loop
+ruleflow-group "ProductEditsDeny_TimelyFiling"
+
+    when
+        ClaimBenefitRequest(!this.getGroupPopulationCode().isMedicaid(), !this.getGroupPopulationCode().isSCHIPSMedicarePricing(), !this.getGroupPopulationCode().isSCHIPS())
+//   $claim: Claim(this.getExtensionNumber().equals("00"))
+   $claim: Claim()
+   $cl: ClaimLine(!this.hasDroolsHistoryFired("CLM00642"))
+   PerformedService($svcDt: this.getServiceStartDate()) from $cl.getService()
+   not Claim(this.entityExists()) from $claim.getOriginalReferenceClaim()
+   $member: Member(this.entityExists()) from $claim.getMember()
+   Group($days: this.getBFDelayPaymentPeriod().intValue()) from $member.getGroup()
+   ClaimContext(this.getReceiveDate().after($svcDt), !this.getReceiveDate().isDaysAfter($svcDt,$days), !this.getBatchLocatorCode().equals("CQ"))
+   not AttachmentType(this.getType().isMiscAttachment() || this.getType().isEOBCOB())
+   $crc: ClaimRuleContext()
+    then
+     $cl.addDroolsHistory("CLM00642");
+     update($cl);
+        update($crc.addDenyLineValidationError("CLM00642",$cl));
+
+end
