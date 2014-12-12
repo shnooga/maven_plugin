@@ -6,7 +6,7 @@ mvn com.vsp.enterprise.test:ruletest:create
 # Optional (defaults are below)
 -DoverwriteExistJavaTest=true 
 -DjavaTestDir=./src/test/java
--DresourceDir=./src/main/resources 
+-DresourceDir=./target
 -DtemplateFile=./src/main/resources/ruletesttemplate.txt
 
 
@@ -17,8 +17,3 @@ mvn com.vsp.enterprise.test:ruletest:clean
 -DinputFile=./myrule.drl 
 # Optional (defaults are below)
 -DresourceDir=./src/main/java/resources 
-
-###############################################################################
-# Creating Maven plugin
-###############################################################################
-mvn archetype:generate -DgroupId=sample.plugin -DartifactId=hello-maven-plugin -DarchetypeGroupId=org.apache.maven.archetypes -DarchetypeArtifactId=maven-archetype-plugin
