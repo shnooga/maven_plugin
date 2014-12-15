@@ -19,19 +19,20 @@ public class RuleCreateMojo extends AbstractMojo {
 	@Parameter(property = "inputFile")
 	private String inputFile;
 
-	@Parameter(defaultValue = "./target", property = "resourceDir")
+	@Parameter(defaultValue = "./target/rules", property = "resourceDir")
 	private String fauxRuleDirectory;
 
-	@Parameter(defaultValue = "${basedir}/src/test/java", property = "javaTestDir")
+	@Parameter(defaultValue = "./target/java", property = "javaTestDir")
 	private String javaTestDirectory;
 
 	@Parameter(defaultValue = "${basedir}/src/main/resources/ruletesttemplate.txt", property = "templateFile")
 	private String templateRuleFile;
 
 	/**
-	 * This generates 2 files A slightly modified rule file from the original
-	 * rule file A java unit test file that will test the above modified rule
-	 * file NOTE: The generated modified rule file contains the same exact rule
+	 * This generates 2 files:
+	 *   A slightly modified rule file from the original rule file.
+	 *   A java unit test file that will test the above modified rule file. 
+	 * NOTE: The generated modified rule file contains the same exact rule
 	 * algorithm. Syntax unrelated to unit testing has been removed. ie
 	 * "ruleflow-group"
 	 */
@@ -54,11 +55,14 @@ public class RuleCreateMojo extends AbstractMojo {
 	}
 
 	/**
-	 * @param fileHelper A helper object that reads & write files.
+	 * @param fileHelper 
+	 *   A helper object that reads & write files.
 	 * @param qualifiedFauxRuleFileName
-	 * "./src/main/resources/myOrigRuleFaux.drl"
-	 * @return The freshly generated qualified unit test file name, ie
-	 * "./src/test/java/myOrigRuleTest.java" An empty string for failure.
+	 *   "./src/main/resources/myOrigRuleFaux.drl"
+	 * @return 
+	 *   The freshly generated unit test file name, in unix dash format since windows
+	 *   	can read the forward slash also.  ie "./src/test/java/myOrigRuleTest.java" 
+	 *   An empty string for failure.
 	 */
 	private String createUnitTestFile(FileHelper fileHelper, String qualifiedFauxRuleFileName) {
 		String qualifiedJavaFileName = "";
@@ -81,7 +85,7 @@ public class RuleCreateMojo extends AbstractMojo {
 		} catch (Exception ex) {
 			Logger.getLogger(RuleCreateMojo.class.getName()).log(Level.SEVERE, null, ex);
 		}
-		return qualifiedJavaFileName;
+		return FileNameManipulator.replaceWithUnixSeparator(qualifiedJavaFileName);
 	}
 
 	/**
@@ -90,8 +94,8 @@ public class RuleCreateMojo extends AbstractMojo {
 	 * @param origRuleFileName 
 	 *   "./some/dir/myRule.drl"
 	 * @return 
-	 *   The freshly generated rule file name, ie
-	 *   "./target/myRuleFaux.drl" 
+	 *   The freshly generated rule file name, in unix dash format since windows
+	 *   	can read the forward slash also.  ie  "./target/myRuleFaux.drl" 
 	 *   An empty string for failure.
 	 */
 	private String createFauxRuleFile(FileHelper fileHelper, String origRuleFileName) {
@@ -107,6 +111,48 @@ public class RuleCreateMojo extends AbstractMojo {
 		} catch (Exception ex) {
 			Logger.getLogger(RuleCreateMojo.class.getName()).log(Level.SEVERE, null, ex);
 		}
-		return qualifiedFauxRuleFileName;
+		return FileNameManipulator.replaceWithUnixSeparator(qualifiedFauxRuleFileName);
 	}
+
+	public boolean isOverwriteExistingJavaTest() {
+		return overwriteExistingJavaTest;
+	}
+
+	public void setOverwriteExistingJavaTest(boolean overwriteExistingJavaTest) {
+		this.overwriteExistingJavaTest = overwriteExistingJavaTest;
+	}
+
+	public String getInputFile() {
+		return inputFile;
+	}
+
+	public void setInputFile(String inputFile) {
+		this.inputFile = inputFile;
+	}
+
+	public String getFauxRuleDirectory() {
+		return fauxRuleDirectory;
+	}
+
+	public void setFauxRuleDirectory(String fauxRuleDirectory) {
+		this.fauxRuleDirectory = fauxRuleDirectory;
+	}
+
+	public String getJavaTestDirectory() {
+		return javaTestDirectory;
+	}
+
+	public void setJavaTestDirectory(String javaTestDirectory) {
+		this.javaTestDirectory = javaTestDirectory;
+	}
+
+	public String getTemplateRuleFile() {
+		return templateRuleFile;
+	}
+
+	public void setTemplateRuleFile(String templateRuleFile) {
+		this.templateRuleFile = templateRuleFile;
+	}
+
+
 }

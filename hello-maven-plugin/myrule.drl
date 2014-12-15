@@ -1,5 +1,5 @@
 //created on: Feb 13, 2014
-package rules.entitlement.ProductEdit.Service
+package com.entitlement.ProductEdit.Service
 
 import com.vsp.enterprise.busobj.entity.benefit.Benefit;
 import com.vsp.enterprise.busobj.entity.performedservice.ProfessionalService;

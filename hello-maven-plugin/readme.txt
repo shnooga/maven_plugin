@@ -1,5 +1,7 @@
 ###############################################################################
 # To create new rule test
+# NOTE:
+#	In Windows OS, forward slashes are also acceptable. ie "c:/mydir/somerule.drl"
 ###############################################################################
 mvn com.vsp.enterprise.test:ruletest:create 
 -DinputFile=./myrule.drl 

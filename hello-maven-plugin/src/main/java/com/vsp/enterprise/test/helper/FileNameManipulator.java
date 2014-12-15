@@ -13,23 +13,17 @@ public class FileNameManipulator {
 	private String qualifiedFileName;
 
 	public FileNameManipulator(String fullyQualifiedFileName) {
-		this.qualifiedFileName = fullyQualifiedFileName;
-		replaceWithUnixSeparator();
+		qualifiedFileName = replaceWithUnixSeparator(fullyQualifiedFileName);
 	}
 
-	private void replaceWithUnixSeparator() {
-		if (!qualifiedFileName.contains("\\")) 
-			return;
-
-		StringBuilder sb = new StringBuilder();
-		StringTokenizer tokenizer = new StringTokenizer(qualifiedFileName, "\\");
-		
-		while (tokenizer.hasMoreElements()) {
-			if (sb.length() > 0) 
-				sb.append("/");
-			sb.append(tokenizer.nextToken());
-		}
-		qualifiedFileName = sb.toString();
+	/**
+	 * Windows can handle forward slashes; this helper method is to use the 
+	 * most common path denominator of forward slashes.
+	 * @param qualifiedFileName
+	 * @return 
+	 */
+	public static String replaceWithUnixSeparator(String qualifiedFileName) {
+		return qualifiedFileName.replace("\\", "/");
 	}
 
 	/**

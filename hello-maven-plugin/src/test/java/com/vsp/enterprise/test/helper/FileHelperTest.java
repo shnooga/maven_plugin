@@ -35,13 +35,13 @@ public class FileHelperTest {
 		FileHelper instance = new FileHelper();
 
 		instance.readDroolFile(ruleFileName);
-		assertThat(instance.getJavaPackage(), is("rules.entitlement.ProductEdit.Service"));
+		assertThat(instance.getJavaPackage(), is("com.entitlement.ProductEdit.Service"));
 	}
 
 	@Test
 	public void testGetJavaPackageAsPath() {
 		FileHelper instance = new FileHelper();
-		String expectedPath = "rules" + File.separator + "entitlement" + File.separator + "ProductEdit" + File.separator + "Service";
+		String expectedPath = "com" + File.separator + "entitlement" + File.separator + "ProductEdit" + File.separator + "Service";
 
 		instance.readDroolFile(ruleFileName);
 		assertThat(instance.getJavaPackageAsPath(), is(expectedPath));
@@ -55,7 +55,7 @@ public class FileHelperTest {
 		FileHelper instance = new FileHelper();
 		String text = instance.readDroolFile(ruleFileName);
 
-		assertThat(matches(".*package rules.entitlement.ProductEdit.Service.*", text), is(true));
+		assertThat(matches(".*package com.entitlement.ProductEdit.Service.*", text), is(true));
 	}
 
 	/**
@@ -70,7 +70,7 @@ public class FileHelperTest {
 		// This will tack on the package string extracted from the drool file
 		String text = instance.readJavaTemplateFile(javaTemplateFileName, "MyUnitTest", "somerule.drl");
 		// Look for the package string
-		assertThat(matches(".*package rules.entitlement.ProductEdit.Service.*", text), is(true));
+		assertThat(matches(".*package com.entitlement.ProductEdit.Service.*", text), is(true));
 		// Look for the import string
 		assertThat(matches(".*import com.vsp.arch.data.types.VSPDate;.*", text), is(true));
 	}
