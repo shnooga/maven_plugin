@@ -1,0 +1,25 @@
+//created on: Feb 13, 2014
+package com.entitlement.ProductEdit.Service
+
+import com.vsp.enterprise.busobj.entity.benefit.Benefit;
+import com.vsp.enterprise.busobj.entity.performedservice.ProfessionalService;
+import com.vsp.enterprise.busobj.entity.performedservice.Diagnosis;
+import com.vsp.enterprise.busobjsupport.entitlement.rule.EntitlementRuleContext;
+import com.vsp.arch.data.types.VSPDate;
+
+rule "SVC01891"
+	no-loop
+	ruleflow-group "EntitlementService"
+    when
+        $claim: Claim(
+        		$hcfaMsg: this.getHCFABox19().toUpperCase(),
+				$hcfaMsg not matches ".*TERTIARY.*", 
+				$hcfaMsg not matches ".*ARY COB.*", 
+				$hcfaMsg not matches ".*2ND.*COB.*"
+        	)
+    then
+  		Message $message = new Message();
+  		$claim.addMessage($message);
+  		update ($claim);
+end
+

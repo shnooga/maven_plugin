@@ -1,6 +1,7 @@
 package com.vsp.enterprise.test.helper;
 
 import java.io.File;
+import java.util.List;
 import static org.hamcrest.Matchers.*;
 import org.junit.After;
 import static org.junit.Assert.*;
@@ -11,7 +12,7 @@ import org.junit.Test;
  *
  * @author hueyng
  */
-public class DirectoryCreatorTest {
+public class DirectoryUtilTest {
 	private String singleDir;
 	private String multiDir;
 	private String multiDelDir;
@@ -25,38 +26,38 @@ public class DirectoryCreatorTest {
 
 	@After
 	public void tearDown() {
-		DirectoryCreator instance;
+		DirectoryUtil instance;
 
-		instance = new DirectoryCreator(singleDir);
+		instance = new DirectoryUtil(singleDir);
 		instance.delDir();
-		instance = new DirectoryCreator(multiDelDir);
+		instance = new DirectoryUtil(multiDelDir);
 		instance.delDir();
 	}
 
 	@Test
 	public void testExistenceOfBogusDir() {
 		String dir = OsUtils.isWindows() ? "c:/yik/yak" : "/yik/yak";
-		DirectoryCreator instance = new DirectoryCreator(dir);
+		DirectoryUtil instance = new DirectoryUtil(dir);
 		assertThat(instance.exists(), is(false));
 	}
 
 	@Test
 	public void testExistenceOfValidDir() {
 		String dir = OsUtils.isWindows() ? "c:/trash" : "/opt";
-		DirectoryCreator instance = new DirectoryCreator(dir);
+		DirectoryUtil instance = new DirectoryUtil(dir);
 
 		assertThat(instance.exists(), is(true));
 	}
 
 	@Test
 	public void testMkdir() {
-		DirectoryCreator instance = new DirectoryCreator(singleDir);
+		DirectoryUtil instance = new DirectoryUtil(singleDir);
 		assertThat(instance.mkdir(), is(true));
 	}
 
 	@Test
 	public void testMkdirs() {
-		DirectoryCreator instance = new DirectoryCreator(multiDir);
+		DirectoryUtil instance = new DirectoryUtil(multiDir);
 		assertThat(instance.mkdirs(), is(true));
 	}
 
@@ -64,15 +65,25 @@ public class DirectoryCreatorTest {
 	public void testDelDir() {
 		String dir = OsUtils.isWindows() ? "c:/trash/delme3/again/please" : "./delme3/again/please";
 		String delDir = OsUtils.isWindows() ? "c:/trash/delme3" : "./delme3";
-		DirectoryCreator instance;
+		DirectoryUtil instance;
 
-		instance = new DirectoryCreator(dir);
+		instance = new DirectoryUtil(dir);
 		instance.mkdirs();
 
-		instance = new DirectoryCreator(delDir);
+		instance = new DirectoryUtil(delDir);
 		instance.delDir();
 		File f = new File(delDir);
 		assertThat(f.exists(), is(false));
+	}
+
+	@Test
+	public void testFileSearch() {
+		DirectoryUtil instance = new DirectoryUtil(multiDir);
+		List<File> filesFound = instance.fileSearch("./src/main/resources", DirectoryUtil.DRL_REGEX);
+		assertThat(filesFound.size(), is(2));
+		for(File file : filesFound) {
+			assertThat(file.getName(), isOneOf("ruleA.drl", "ruleB.drl"));
+		}
 	}
 
 }

@@ -68,7 +68,7 @@ public class RuleCreateMojo extends AbstractMojo {
 		String qualifiedJavaFileName = "";
 		try {
 			String qualifiedJavaDir = javaTestDirectory + File.separator + fileHelper.getJavaPackageAsPath();
-			DirectoryCreator directoryUtil = new DirectoryCreator(qualifiedJavaDir);
+			DirectoryUtil directoryUtil = new DirectoryUtil(qualifiedJavaDir);
 
 			directoryUtil.mkdirs();
 
@@ -102,7 +102,7 @@ public class RuleCreateMojo extends AbstractMojo {
 		String qualifiedFauxRuleFileName = "";
 
 		try {
-			DirectoryCreator directoryUtil = new DirectoryCreator(fauxRuleDirectory);
+			DirectoryUtil directoryUtil = new DirectoryUtil(fauxRuleDirectory);
 
 			directoryUtil.mkdirs();
 			qualifiedFauxRuleFileName = createRuleFileNameManipulator().postPendTextToFileName(RULE_NAME_MARKER);
