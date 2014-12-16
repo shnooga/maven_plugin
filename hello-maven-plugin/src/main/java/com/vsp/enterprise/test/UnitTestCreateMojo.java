@@ -6,8 +6,8 @@ import java.util.logging.*;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugins.annotations.*;
 
-@Mojo(name = "rules_create", defaultPhase = LifecyclePhase.PROCESS_SOURCES)
-public class RuleCreateMojo extends AbstractMojo {
+@Mojo(name = "unit_test_create", defaultPhase = LifecyclePhase.PROCESS_SOURCES)
+public class UnitTestCreateMojo extends AbstractMojo {
 
 	public static final String RULE_NAME_MARKER = "Faux";
 	public static final String JAVA_NAME_MARKER = "Test";
@@ -25,7 +25,7 @@ public class RuleCreateMojo extends AbstractMojo {
 	@Parameter(defaultValue = "./target/java", property = "javaTestDir")
 	private String javaTestDirectory;
 
-	@Parameter(defaultValue = "${basedir}/src/main/resources/UnitTestTemplate.txt", property = "templateFile")
+	@Parameter(defaultValue = "${basedir}/src/main/resources/ruletesttemplate.txt", property = "templateFile")
 	private String templateRuleFile;
 
 	/**
@@ -83,7 +83,7 @@ public class RuleCreateMojo extends AbstractMojo {
 				System.out.println("" + qualifiedJavaFileName + " already exists!! To overwrite use -DoverwriteExistJavaTest=true");
 			}
 		} catch (Exception ex) {
-			Logger.getLogger(RuleCreateMojo.class.getName()).log(Level.SEVERE, null, ex);
+			Logger.getLogger(UnitTestCreateMojo.class.getName()).log(Level.SEVERE, null, ex);
 		}
 		return FileNameManipulator.replaceWithUnixSeparator(qualifiedJavaFileName);
 	}
@@ -109,7 +109,7 @@ public class RuleCreateMojo extends AbstractMojo {
 			fileHelper.writeFile(qualifiedFauxRuleFileName, fileHelper.readDroolFile(origRuleFileName));
 
 		} catch (Exception ex) {
-			Logger.getLogger(RuleCreateMojo.class.getName()).log(Level.SEVERE, null, ex);
+			Logger.getLogger(UnitTestCreateMojo.class.getName()).log(Level.SEVERE, null, ex);
 		}
 		return FileNameManipulator.replaceWithUnixSeparator(qualifiedFauxRuleFileName);
 	}

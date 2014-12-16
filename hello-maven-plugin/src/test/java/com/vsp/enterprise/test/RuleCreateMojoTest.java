@@ -23,7 +23,7 @@ public class RuleCreateMojoTest {
 //		instance.setInputFile("c:/trash/CLM02050.drl");
 		instance.setFauxRuleDirectory("./target/rules");
 		instance.setJavaTestDirectory("./target/java");
-		instance.setTemplateRuleFile("./src/main/resources/ruletesttemplate.txt");
+		instance.setTemplateRuleFile("./src/main/resources/UnitTestTemplate.txt");
 
 		instance.execute();
 		

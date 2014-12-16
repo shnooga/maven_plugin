@@ -23,7 +23,7 @@ public class FileHelperTest {
 	@Before
 	public void setUp() {
 		ruleFileName = "./myrule.drl";
-		javaTemplateFileName = "./src/main/resources/ruletesttemplate.txt";
+		javaTemplateFileName = "./src/main/resources/UnitTestTemplate.txt";
 	}
 
 	@After
