@@ -9,13 +9,13 @@ import org.junit.Test;
  *
  * @author hueyng
  */
-public class RuleCreateMojoTest {
+public class UnitTestCreateMojoTest {
 	/**
-	 * Test of execute method, of class RuleCreateMojo.
+	 * Test of execute method, of class RulesCreateMojo.
 	 */
 	@Test
 	public void testExecute() {
-		RuleCreateMojo instance = new RuleCreateMojo();
+		UnitTestCreateMojo instance = new UnitTestCreateMojo();
 
 		instance.setOverwriteExistingJavaTest(true);
 		instance.setInputFile("./myrule.drl");

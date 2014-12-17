@@ -77,12 +77,22 @@ public class DirectoryUtilTest {
 	}
 
 	@Test
-	public void testFileSearch() {
-		DirectoryUtil instance = new DirectoryUtil(multiDir);
-		List<File> filesFound = instance.fileSearch("./src/main/resources", DirectoryUtil.DRL_REGEX);
+	public void testRuleFilesSearch() {
+		DirectoryUtil instance = new DirectoryUtil("./src/main/resources");
+		List<File> filesFound = instance.ruleFilesSearch();
 		assertThat(filesFound.size(), is(2));
 		for(File file : filesFound) {
 			assertThat(file.getName(), isOneOf("ruleA.drl", "ruleB.drl"));
+		}
+	}
+
+	@Test
+	public void testFilesSearch() {
+		DirectoryUtil instance = new DirectoryUtil("./src/main/java");
+		List<File> filesFound = instance.filesSearch("Rule.+\\.java");
+		assertThat(filesFound.size(), is(2));
+		for(File file : filesFound) {
+			assertThat(file.getName(), isOneOf("RulesCreateMojo.java", "RuleTestConstants.java"));
 		}
 	}
 

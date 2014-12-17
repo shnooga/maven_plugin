@@ -1,5 +1,7 @@
 package com.vsp.enterprise.test;
 
+import static com.vsp.enterprise.test.RuleTestConstants.JAVA_NAME_MARKER;
+import static com.vsp.enterprise.test.RuleTestConstants.RULE_NAME_MARKER;
 import com.vsp.enterprise.test.helper.*;
 import java.io.*;
 import java.util.logging.*;
@@ -8,10 +10,6 @@ import org.apache.maven.plugins.annotations.*;
 
 @Mojo(name = "unit_test_create", defaultPhase = LifecyclePhase.PROCESS_SOURCES)
 public class UnitTestCreateMojo extends AbstractMojo {
-
-	public static final String RULE_NAME_MARKER = "Faux";
-	public static final String JAVA_NAME_MARKER = "Test";
-	private static final String[] flaggedDroolSyntax = {".*ruleflow-group .*"};
 
 	@Parameter(defaultValue = "false", property = "overwriteExistJavaTest")
 	private boolean overwriteExistingJavaTest;
@@ -38,6 +36,7 @@ public class UnitTestCreateMojo extends AbstractMojo {
 	 */
 	public void execute() {
 		if (inputFile == null) {
+			System.out.println("Missing inputFile param!!!");
 			return;
 		}
 		FileHelper fileHelper = new FileHelper();

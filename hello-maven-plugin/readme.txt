@@ -8,7 +8,7 @@ mvn com.vsp.enterprise.test:ruletest:unit_test_create
 # Optional (defaults are below)
 -DoverwriteExistJavaTest=true 
 -DjavaTestDir=./src/test/java
--DresourceDir=./target
+-DresourceDir=./target/rules
 -DtemplateFile=./src/main/resources/UnitTestTemplate.txt
 
 ###############################################################################
@@ -17,15 +17,6 @@ mvn com.vsp.enterprise.test:ruletest:unit_test_create
 #	In Windows OS, forward slashes are also acceptable. ie "c:/mydir/somerule.drl"
 ###############################################################################
 mvn com.vsp.enterprise.test:ruletest:rules_create
--DinputFile=./myrule.drl 
+-DinputFile=./some/ruledir
 # Optional (defaults are below)
--DresourceDir=./target
-
-
-###############################################################################
-# To clean off the files
-###############################################################################
-mvn com.vsp.enterprise.test:ruletest:clean 
--DinputFile=./myrule.drl 
-# Optional (defaults are below)
--DresourceDir=./src/main/java/resources 
+-DresourceDir=./target/rules

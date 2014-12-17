@@ -36,6 +36,18 @@ public class FileNameManipulatorTest {
 	}
 
 	@Test
+	public void testExtractParentFile() {
+		String fileName = OsUtils.isWindows() 
+						? "c:\\mydir\\is\\long\\hello.drl" 
+						: "/mydir/is/long/hello.drl";
+		String expectDir = OsUtils.isWindows() 
+						? "c:\\mydir\\is\\long"
+						: "/mydir/is/long";
+		manipulator = new FileNameManipulator(fileName);
+		assertThat(manipulator.extractParentFile(), is(expectDir));
+	}
+
+	@Test
 	public void testExtractFileNameWithParams() {
 		String fileName = OsUtils.isWindows() 
 						? "c:\\mydir\\is\\long\\hello.drl" 

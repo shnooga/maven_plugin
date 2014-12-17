@@ -1,5 +1,5 @@
 //created on: Feb 13, 2014
-package com.entitlement.ProductEdit.Service
+package com.vsp.one.two
 
 import com.vsp.enterprise.busobj.entity.benefit.Benefit;
 import com.vsp.enterprise.busobj.entity.performedservice.ProfessionalService;
@@ -7,7 +7,7 @@ import com.vsp.enterprise.busobj.entity.performedservice.Diagnosis;
 import com.vsp.enterprise.busobjsupport.entitlement.rule.EntitlementRuleContext;
 import com.vsp.arch.data.types.VSPDate;
 
-rule "SVC01891"
+rule "B"
 	no-loop
 	ruleflow-group "EntitlementService"
     when

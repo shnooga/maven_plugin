@@ -1,7 +1,6 @@
 package com.vsp.enterprise.test.helper;
 
 import java.io.File;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -53,15 +52,25 @@ public class DirectoryUtil {
 		return retVal;
 	}
 
-	public List<File> fileSearch(String dir, String regExPattern) {
+	/**
+	 * 
+	 * @param dir
+	 * @param regExPattern
+	 * @return 
+	 */
+	public List<File> filesSearch(String regEx) {
 		List<File> filesFound = new ArrayList<File>();
-		RegExFileNameFilter filter = new RegExFileNameFilter(regExPattern);
 
-		findFile(filter, new File(dir), filesFound);
+		findFile(regEx, new File(dir), filesFound);
 		return filesFound;
 	}
 
-	private void findFile(RegExFileNameFilter fileFilter, File parentFile, List<File> filesFound) {
+	public List<File> ruleFilesSearch() {
+		return filesSearch(DRL_REGEX);
+	}
+
+
+	private void findFile(String regEx, File parentFile, List<File> filesFound) {
 		File[] list = parentFile.listFiles();
 		if (list == null) {
 			System.out.println(parentFile.getName() + " is an invalid directory!");
@@ -69,27 +78,10 @@ public class DirectoryUtil {
 		}
 		for (File file : list) {
 			if (file.isDirectory()) {
-				findFile(fileFilter, file, filesFound);
-			} else if (file.getName().matches(DRL_REGEX)) {
+				findFile(regEx, file, filesFound);
+			} else if (file.getName().matches(regEx)) {
 				filesFound.add(file);
-				System.out.println(file.getParentFile() + " " + file.getName());
 			}
 		}
-	}
-
-	private class RegExFileNameFilter implements FilenameFilter {
-
-		private String regEx;
-
-		public RegExFileNameFilter(String regEx) {
-			this.regEx = regEx;
-		}
-
-		@Override
-		public boolean accept(File dir, String name) {
-			File file = new File(name);
-			return (!file.isDirectory() && name.matches(regEx));
-		}
-
 	}
 }

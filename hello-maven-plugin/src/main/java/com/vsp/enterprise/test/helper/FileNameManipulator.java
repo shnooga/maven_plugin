@@ -78,6 +78,13 @@ public class FileNameManipulator {
 	}
 
 	/**
+	 * @return /mydir/MyFile.txt -> /mydir
+	 */
+	public String extractParentFile() {
+		return Paths.get(qualifiedFileName).getParent().toString();
+	}
+
+	/**
 	 * "c:/mydir/foo.bar" -> ["c:/mydir", "foo", "bar"]
 	 *
 	 * @return A 3 element array of path, filename, file extension
