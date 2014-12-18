@@ -17,6 +17,6 @@ mvn com.vsp.enterprise.test:ruletest:unit_test_create
 #	In Windows OS, forward slashes are also acceptable. ie "c:/mydir/somerule.drl"
 ###############################################################################
 mvn com.vsp.enterprise.test:ruletest:rules_create
--DinputFile=./some/ruledir
+-DinputDir=./some/ruledir
 # Optional (defaults are below)
 -DresourceDir=./target/rules
