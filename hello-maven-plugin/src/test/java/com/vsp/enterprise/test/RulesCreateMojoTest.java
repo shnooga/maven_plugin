@@ -18,7 +18,7 @@ public class RulesCreateMojoTest {
 	public void testExecute() {
 		RulesCreateMojo instance = new RulesCreateMojo();
 
-		instance.setInputFile("./src/main/resources");
+		instance.setInputDir("./src/main/resources");
 		instance.setFauxRuleDirectory("./target/rules");
 
 		instance.execute();

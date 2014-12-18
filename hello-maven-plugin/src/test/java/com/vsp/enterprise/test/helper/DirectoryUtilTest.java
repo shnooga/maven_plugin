@@ -90,7 +90,7 @@ public class DirectoryUtilTest {
 	public void testFilesSearch() {
 		DirectoryUtil instance = new DirectoryUtil("./src/main/java");
 		List<File> filesFound = instance.filesSearch("Rule.+\\.java");
-		assertThat(filesFound.size(), is(2));
+		assertThat(filesFound.size(), is(1));
 		for(File file : filesFound) {
 			assertThat(file.getName(), isOneOf("RulesCreateMojo.java", "RuleTestConstants.java"));
 		}

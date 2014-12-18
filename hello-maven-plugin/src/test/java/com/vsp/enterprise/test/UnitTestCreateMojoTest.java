@@ -27,7 +27,7 @@ public class UnitTestCreateMojoTest {
 
 		instance.execute();
 		
-		File fauxRuleFile = new File("./target/rules/myruleFaux.drl");
+		File fauxRuleFile = new File("./target/rules/com/entitlement/ProductEdit/Service/myruleFaux.drl");
 		assertThat(fauxRuleFile.exists(), is(true));
 
 		File javaTestFile = new File("./target/java/com/entitlement/ProductEdit/Service/myruleTest.java");

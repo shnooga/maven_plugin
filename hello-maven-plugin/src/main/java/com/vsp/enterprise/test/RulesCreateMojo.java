@@ -1,6 +1,5 @@
 package com.vsp.enterprise.test;
 
-import static com.vsp.enterprise.test.RuleTestConstants.RULE_NAME_MARKER;
 import com.vsp.enterprise.test.helper.*;
 import java.io.*;
 import java.util.List;
@@ -11,8 +10,8 @@ import org.apache.maven.plugins.annotations.*;
 @Mojo(name = "rules_create", defaultPhase = LifecyclePhase.PROCESS_SOURCES)
 public class RulesCreateMojo extends AbstractMojo {
 
-	@Parameter(property = "inputFile")
-	private String inputFile;
+	@Parameter(property = "inputDir")
+	private String inputDir;
 
 	@Parameter(defaultValue = "./target/rules", property = "resourceDir")
 	private String fauxRuleDirectory;
@@ -29,11 +28,11 @@ public class RulesCreateMojo extends AbstractMojo {
 	public void execute() {
 		try {
 
-			if (inputFile == null) {
-				System.out.println("Missing inputFile param. Rule Directory is mandatory!!!");
+			if (inputDir == null) {
+				System.out.println("Missing inputDir param. Rule Directory is mandatory!!!");
 				return;
 			}
-			DirectoryUtil directoryUtil = new DirectoryUtil(inputFile);
+			DirectoryUtil directoryUtil = new DirectoryUtil(inputDir);
 			List<File> files = directoryUtil.ruleFilesSearch();
 			FileHelper fileHelper = new FileHelper();
 
@@ -60,26 +59,26 @@ public class RulesCreateMojo extends AbstractMojo {
 			FileNameManipulator manipulator = new FileNameManipulator(origRuleFileName);
 			String ruleText = fileHelper.readDroolFile(origRuleFileName);
 
-			manipulator = new FileNameManipulator(fauxRuleDirectory + File.separator + fileHelper.getJavaPackageAsPath() + File.separator + manipulator.extractFileName());
+			manipulator = new FileNameManipulator(fauxRuleDirectory + File.separator + fileHelper.getJavaPackageAsPath() + File.separator + manipulator.extractFileNameAndExtension());
 
 			DirectoryUtil directoryUtil = new DirectoryUtil(manipulator.extractParentFile());
 
 			directoryUtil.mkdirs();
-			qualifiedFauxRuleFileName = manipulator.postPendTextToFileName(RULE_NAME_MARKER);
+			qualifiedFauxRuleFileName = manipulator.createRuleFauxFileNameString(fauxRuleDirectory, fileHelper.getJavaPackage());
 			fileHelper.writeFile(qualifiedFauxRuleFileName, ruleText);
 
 		} catch (Exception ex) {
-			Logger.getLogger(RulesCreateMojo.class.getName()).log(Level.SEVERE, null, ex);
+			Logger.getLogger(UnitTestCreateMojo.class.getName()).log(Level.SEVERE, null, ex);
 		}
 		return FileNameManipulator.replaceWithUnixSeparator(qualifiedFauxRuleFileName);
 	}
 
-	public String getInputFile() {
-		return inputFile;
+	public String getInputDir() {
+		return inputDir;
 	}
 
-	public void setInputFile(String inputFile) {
-		this.inputFile = inputFile;
+	public void setInputDir(String inputDir) {
+		this.inputDir = inputDir;
 	}
 
 	public String getFauxRuleDirectory() {

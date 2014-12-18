@@ -32,7 +32,7 @@ public class FileNameManipulatorTest {
 						? "c:\\mydir\\is\\long\\hello.drl" 
 						: "/mydir/is/long/hello.drl";
 		manipulator = new FileNameManipulator(fileName);
-		assertThat(manipulator.extractFileName(), is("hello.drl"));
+		assertThat(manipulator.extractFileNameAndExtension(), is("hello.drl"));
 	}
 
 	@Test
@@ -52,7 +52,7 @@ public class FileNameManipulatorTest {
 		String fileName = OsUtils.isWindows() 
 						? "c:\\mydir\\is\\long\\hello.drl" 
 						: "/mydir/is/long/hello.drl";
-		assertThat(FileNameManipulator.extractFileName(fileName), is("hello.drl"));
+		assertThat(FileNameManipulator.extractFileNameAndExtension(fileName), is("hello.drl"));
 	}
 
 	@Test
@@ -81,18 +81,28 @@ public class FileNameManipulatorTest {
 	}
 	
 	@Test
-	public void testcreateJavaTestFileNameString() {
-		String fileName = OsUtils.isWindows() 
-						? "c:\\mydir\\is\\long\\hello.drl" 
-						: "/mydir/is/long/hello.drl";
-		String javaTestDir = OsUtils.isWindows() 
-						? "c:\\mydir\\src\\test\\com\\mickey\\mouse" 
-						: "/mydir/src/test";
-		String expectedFileName = javaTestDir + File.separator + "helloTest.java";
+	public void testCreateJavaTestFileNameString() {
+		String fileName = OsUtils.isWindows()    ? "c:/mydir/is/long/hello.drl" : "/mydir/is/long/hello.drl";
+		String javaTestDir = OsUtils.isWindows() ? "c:/mydir/src/test"          : "/mydir/src/test";
+		StringBuilder sb = new StringBuilder(javaTestDir);
 
+		sb.append("/com/vsp/uno/dos/").append("helloTest.java");
 		manipulator = new FileNameManipulator(fileName);
-		String qualifiedFileName = manipulator.createJavaTestFileNameString(javaTestDir, "Test");
+		String qualifiedFileName = manipulator.createJavaTestFileNameString(javaTestDir, "com.vsp.uno.dos");
 		
-		assertThat(qualifiedFileName, is(expectedFileName));
+		assertThat(qualifiedFileName, is(sb.toString()));
+	}
+	
+	@Test
+	public void testCreateRuleFauxFileNameString1() {
+		String fileName = OsUtils.isWindows() 		? "c:/mydir/is/long/hello.java" : "/mydir/is/long/hello.drl";
+		String javaTestDir = OsUtils.isWindows() 	? "c:/mydir/src/test" 			: "/mydir/src/test";
+		StringBuilder sb = new StringBuilder(javaTestDir);
+
+		sb.append("/com/vsp/uno/dos/").append("helloFaux.drl");
+		manipulator = new FileNameManipulator(fileName);
+		String qualifiedFileName = manipulator.createRuleFauxFileNameString(javaTestDir, "com.vsp.uno.dos");
+		
+		assertThat(qualifiedFileName, is(sb.toString()));
 	}
 }
