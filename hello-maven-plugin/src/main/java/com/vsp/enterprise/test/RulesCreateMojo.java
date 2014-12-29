@@ -38,7 +38,7 @@ public class RulesCreateMojo extends AbstractMojo {
 
 			for (File ruleFile : files) {
 				System.out.println(ruleFile.getName() + " : " + ruleFile.getCanonicalPath());
-				String fauxRuleFileName = createFauxRuleFile(fileHelper, ruleFile.getCanonicalPath());
+				createFauxRuleFile(fileHelper, ruleFile.getCanonicalPath());
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

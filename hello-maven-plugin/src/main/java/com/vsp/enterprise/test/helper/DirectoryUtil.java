@@ -53,10 +53,8 @@ public class DirectoryUtil {
 	}
 
 	/**
-	 * 
-	 * @param dir
-	 * @param regExPattern
-	 * @return 
+	 * @param regEx
+	 * @return
 	 */
 	public List<File> filesSearch(String regEx) {
 		List<File> filesFound = new ArrayList<File>();
@@ -68,7 +66,6 @@ public class DirectoryUtil {
 	public List<File> ruleFilesSearch() {
 		return filesSearch(DRL_REGEX);
 	}
-
 
 	private void findFile(String regEx, File parentFile, List<File> filesFound) {
 		File[] list = parentFile.listFiles();

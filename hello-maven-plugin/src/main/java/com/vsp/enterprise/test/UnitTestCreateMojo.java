@@ -2,6 +2,7 @@ package com.vsp.enterprise.test;
 
 import com.vsp.enterprise.test.helper.*;
 import java.io.*;
+import java.util.List;
 import java.util.logging.*;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugins.annotations.*;
@@ -15,6 +16,9 @@ public class UnitTestCreateMojo extends AbstractMojo {
 	@Parameter(property = "inputFile")
 	private String inputFile;
 
+	@Parameter(property = "inputDir")
+	private String inputDir;
+
 	@Parameter(defaultValue = "./target/rules", property = "resourceDir")
 	private String fauxRuleDirectory;
 
@@ -25,20 +29,49 @@ public class UnitTestCreateMojo extends AbstractMojo {
 	private String templateRuleFile;
 
 	/**
-	 * This generates 2 files: A slightly modified rule file from the original
-	 * rule file. A java unit test file that will test the above modified rule
-	 * file. NOTE: The generated modified rule file contains the same exact rule
-	 * algorithm. Syntax unrelated to unit testing has been removed. ie
-	 * "ruleflow-group"
+	 * If inputFile param given: Generate 2 files: A slightly modified rule file
+	 * from the original rule file. A java unit test file that will test the
+	 * above modified rule file. NOTE: The generated modified rule file contains
+	 * the same exact rule algorithm. Syntax unrelated to unit testing has been
+	 * removed. ie "ruleflow-group"
+	 *
+	 * If inputDir param given: Recursively generate Java Unit Test Files
+	 * corresponding to the inputDir.
 	 */
 	public void execute() {
-		if (inputFile == null) {
-			System.out.println("Missing inputFile param!!!");
+		if ((inputFile == null) && (inputDir == null)) {
+			System.out.println("inputFile or inputDir param are mandatory!!!");
 			return;
 		}
+
+		if (inputFile != null) {
+			createUnitTestFile(inputFile);
+		}
+		if (inputDir != null) {
+			createUnitTestFiles(inputDir);
+		}
+	}
+
+	private void createUnitTestFile(String origRuleFileName) {
 		FileHelper fileHelper = new FileHelper();
-		createFauxRuleFile(fileHelper, inputFile);
-		createUnitTestFile(fileHelper, inputFile);
+
+		createFauxRuleFile(fileHelper, origRuleFileName);
+		UnitTestCreateMojo.this.createUnitTestFile(fileHelper, origRuleFileName);
+	}
+
+	private void createUnitTestFiles(String origRuleFileDir) {
+		try {
+
+			DirectoryUtil directoryUtil = new DirectoryUtil(origRuleFileDir);
+			List<File> files = directoryUtil.ruleFilesSearch();
+
+			for (File ruleFile : files) {
+				System.out.println(ruleFile.getName() + " : " + ruleFile.getCanonicalPath());
+				createUnitTestFile(ruleFile.getCanonicalPath());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -116,6 +149,14 @@ public class UnitTestCreateMojo extends AbstractMojo {
 
 	public void setInputFile(String inputFile) {
 		this.inputFile = inputFile;
+	}
+
+	public String getInputDir() {
+		return inputDir;
+	}
+
+	public void setInputDir(String inputDir) {
+		this.inputDir = inputDir;
 	}
 
 	public String getFauxRuleDirectory() {
