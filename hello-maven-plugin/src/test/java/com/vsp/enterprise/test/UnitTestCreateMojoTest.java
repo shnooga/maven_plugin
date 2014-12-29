@@ -114,8 +114,8 @@ public class UnitTestCreateMojoTest {
 	}
 
 	/**
-	 * When given no inputFile or inputDir params, no UnitTest class and FauxRule
-	 * files will be created
+	 * When given no inputFile or inputDir params, no UnitTest class and
+	 * FauxRule files will be created
 	 */
 	@Test
 	public void testNoInputParams() {
