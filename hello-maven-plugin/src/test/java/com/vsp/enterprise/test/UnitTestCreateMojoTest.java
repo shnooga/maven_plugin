@@ -3,6 +3,7 @@ package com.vsp.enterprise.test;
 import com.vsp.enterprise.test.helper.DirectoryUtil;
 import java.io.File;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.core.IsNot.not;
 import org.junit.After;
 import static org.junit.Assert.*;
 import org.junit.Before;
@@ -58,7 +59,7 @@ public class UnitTestCreateMojoTest {
 	}
 
 	@Test
-	public void testOverWriteExistingJavaTestFlag() {
+	public void testOverWriteExistingJavaTestFlag_false() {
 		File javaTestFile;
 		long timeStamp;
 
@@ -68,13 +69,31 @@ public class UnitTestCreateMojoTest {
 		timeStamp = javaTestFile.lastModified();
 
 		// 2. Attempt to create myRuleTest.java again with overWriteFlag = false
-//		instance.setOverwriteExistingJavaTest(false);
-		instance.setOverwriteExistingJavaTest(true);
+		instance.setOverwriteExistingJavaTest(false);
 		instance.setInputFile("./myrule.drl");
 		instance.execute();
 
 		javaTestFile = new File("./target/java/com/entitlement/ProductEdit/Service/myruleTest.java");
 		assertThat(javaTestFile.lastModified(), is(timeStamp));
+	}
+
+	@Test
+	public void testOverWriteExistingJavaTestFlag_true() {
+		File javaTestFile;
+		long timeStamp;
+
+		// 1. First, create myRuleTest.java
+		testJavaUnitAndFauxRuleCreate();
+		javaTestFile = new File("./target/java/com/entitlement/ProductEdit/Service/myruleTest.java");
+		timeStamp = javaTestFile.lastModified();
+
+		// 2. Attempt to create myRuleTest.java again with overWriteFlag = true
+		instance.setOverwriteExistingJavaTest(true);
+		instance.setInputFile("./myrule.drl");
+		instance.execute();
+
+		javaTestFile = new File("./target/java/com/entitlement/ProductEdit/Service/myruleTest.java");
+		assertThat(javaTestFile.lastModified(), is(not(timeStamp)));
 	}
 
 	/**
