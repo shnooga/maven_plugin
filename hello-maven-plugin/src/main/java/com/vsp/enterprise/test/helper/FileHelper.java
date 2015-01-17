@@ -75,6 +75,53 @@ public class FileHelper {
 		return sb.toString();
 	}
 
+	public String readJavaFile(String ruleFileName) {
+		StringBuilder sb = new StringBuilder();
+
+		try {
+			FileReader fr = new FileReader(new File(ruleFileName));
+			BufferedReader br = new BufferedReader(fr);
+			String line;
+			List<String> pojoLines = new ArrayList<String>();
+			PojoBuilder builder = new PojoBuilder();
+
+			sb.append("// This POJO was translated from a java class .\n");
+			while ((line = br.readLine()) != null) {
+				System.out.println(line);
+				if (line.matches(".*package .*")) {
+					javaPackage = stripSemiColon(line);
+					sb.append(line).append("\n\n");
+				}
+				if (line.matches(".*import .*")) {
+					importPackages.add(line);
+					sb.append(line).append("\n");
+				}
+
+				if (line.matches(".*class .*")) 
+					sb.append("\n").append(line).append("\n");
+
+				if (builder.isSetter(line))
+					pojoLines.add(line);				
+			}
+			for(String l: pojoLines){
+							sb.append(builder.buildProperty(l)).append("\n");
+			}
+
+			sb.append("\n");
+			for(String l: pojoLines){
+							sb.append(builder.buildGetterMethod(l)).append("\n");
+							sb.append(builder.buildSetterMethod(l)).append("\n");
+			}
+			sb.append("}");
+			System.out.println(sb);
+			br.close();
+			fr.close();
+		} catch (Exception ex) {
+			Logger.getLogger(FileHelper.class.getName()).log(Level.SEVERE, null, ex);
+		}
+		return sb.toString();
+	}
+
 	/**
 	 * Trim whitespaces then remove semicolon from the end of the text
 	 * @param text
