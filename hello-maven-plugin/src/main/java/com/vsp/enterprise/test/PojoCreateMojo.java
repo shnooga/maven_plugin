@@ -60,6 +60,7 @@ public class PojoCreateMojo extends AbstractMojo {
 			File javaTestFile = new File(qualifiedJavaFileName);
 			if (overwriteExistingJavaTest || !javaTestFile.exists()) {
 				String javaFileName = FileNameManipulator.splitFileName(qualifiedJavaFileName)[1];
+				System.out.println(pojoStr);
 				fileHelper.writeFile(qualifiedJavaFileName, pojoStr);
 			} else {
 				System.out.println("" + qualifiedJavaFileName + " already exists!! To overwrite use -DoverwriteExistJavaTest=true");
