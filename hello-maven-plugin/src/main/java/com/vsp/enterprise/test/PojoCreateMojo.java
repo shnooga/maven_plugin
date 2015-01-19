@@ -55,7 +55,7 @@ public class PojoCreateMojo extends AbstractMojo {
 
 			directoryUtil.mkdirs();
 
-			qualifiedJavaFileName = manipulator.createJavaTestFileNameString(javaTestDirectory, fileHelper.getJavaPackage());
+			qualifiedJavaFileName = manipulator.createPojoFileNameString(javaTestDirectory, fileHelper.getJavaPackage());
 
 			File javaTestFile = new File(qualifiedJavaFileName);
 			if (overwriteExistingJavaTest || !javaTestFile.exists()) {

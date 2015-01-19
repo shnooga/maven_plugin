@@ -78,7 +78,7 @@ public class UnitTestCreateMojoTest {
 	}
 
 	@Test
-	public void testOverWriteExistingJavaTestFlag_true() {
+	public void testOverWriteExistingJavaTestFlag_true() throws InterruptedException {
 		File javaTestFile;
 		long timeStamp;
 
@@ -87,6 +87,7 @@ public class UnitTestCreateMojoTest {
 		javaTestFile = new File("./target/java/com/entitlement/ProductEdit/Service/myruleTest.java");
 		timeStamp = javaTestFile.lastModified();
 
+		Thread.currentThread().sleep(100);
 		// 2. Attempt to create myRuleTest.java again with overWriteFlag = true
 		instance.setOverwriteExistingJavaTest(true);
 		instance.setInputFile("./myrule.drl");
@@ -113,19 +114,4 @@ public class UnitTestCreateMojoTest {
 		assertThat(unitTestFile.exists(), is(true));
 	}
 
-	/**
-	 * When given no inputFile or inputDir params, no UnitTest class and
-	 * FauxRule files will be created
-	 */
-	@Test
-	public void testNoInputParams() {
-		instance.execute();
-
-		File generatedFile;
-		generatedFile = new File(FAUX_RULE_DIR);
-		assertThat(generatedFile.exists(), is(false));
-
-		generatedFile = new File(JAVA_TEST_DIR);
-		assertThat(generatedFile.exists(), is(false));
-	}
 }

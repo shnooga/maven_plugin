@@ -6,7 +6,9 @@ package com.vsp.enterprise.test.helper;
  */
 public enum FileType {
 
-	JAVA("Java", ".java", "Test"), RULE("Rule", ".drl", "Faux");
+	JAVA("Java", ".java", "Test"), 
+	POJO("Pojo", ".java", ""), 
+	RULE("Rule", ".drl", "Faux");
 
 	private final String description;
 	private final String extension;

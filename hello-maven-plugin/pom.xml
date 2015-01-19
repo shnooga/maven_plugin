@@ -4,7 +4,7 @@
 
 	<groupId>com.vsp.enterprise.test</groupId>
 	<artifactId>ruletest</artifactId>
-	<version>2.0.1</version>
+	<version>2.0.2</version>
 	<packaging>maven-plugin</packaging>
 
 	<name>Rule Test Generator Plugin</name>

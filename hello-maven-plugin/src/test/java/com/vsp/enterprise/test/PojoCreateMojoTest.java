@@ -43,7 +43,7 @@ public class PojoCreateMojoTest {
 		instance.execute();
 
 
-		File pojoFile = new File("./target/java/com/vsp/enterprise/busobj/entity/Claim.java");
+		File pojoFile = new File("./target/java/com/vsp/enterprise/busobj/entity/claim/Claim.java");
 		assertThat(pojoFile.exists(), is(true));
 	}
 
@@ -54,7 +54,7 @@ public class PojoCreateMojoTest {
 
 		// 1. First, create POJO
 		testPojoCreate();
-		pojoFile = new File("./target/java/com/vsp/enterprise/test/helper/DirectoryUtil.java");
+		pojoFile = new File("./target/java/com/vsp/enterprise/busobj/entity/claim/Claim.java");
 		timeStamp = pojoFile.lastModified();
 
 		// 2. Attempt to create POJO again with overWriteFlag = false
@@ -62,40 +62,28 @@ public class PojoCreateMojoTest {
 		instance.setInputFile("./Claim.java");
 		instance.execute();
 
-		pojoFile = new File("./target/java/com/vsp/enterprise/busobj/entity/Claim.java");
+		pojoFile = new File("./target/java/com/vsp/enterprise/busobj/entity/claim/Claim.java");
 		assertThat(pojoFile.lastModified(), is(timeStamp));
 	}
 
 	@Test
-	public void testOverWriteExistingPojo_Flag_true() {
+	public void testOverWriteExistingPojo_Flag_true() throws InterruptedException {
 		File pojoFile;
 		long timeStamp;
 
 		// 1. First, create POJO
 		testPojoCreate();
-		pojoFile = new File("./target/java/com/vsp/enterprise/busobj/entity/Claim.java");
+		pojoFile = new File("./target/java/com/vsp/enterprise/busobj/entity/claim/Claim.java");
 		timeStamp = pojoFile.lastModified();
+		Thread.currentThread().sleep(100);
 
 		// 2. Attempt to create POJO again with overWriteFlag = true
 		instance.setOverwriteExistingJavaTest(true);
 		instance.setInputFile("./Claim.java");
 		instance.execute();
 
-		pojoFile = new File("./target/java/com/vsp/enterprise/busobj/entity/Claim.java");
+		pojoFile = new File("./target/java/com/vsp/enterprise/busobj/entity/claim/Claim.java");
 		assertThat(pojoFile.lastModified(), is(not(timeStamp)));
 	}
 
-
-	/**
-	 * When given no inputFile no Pojo class will be created
-	 */
-	@Test
-	public void testNoInputParams() {
-		instance.execute();
-
-		File generatedFile;
-
-		generatedFile = new File(JAVA_TEST_DIR);
-		assertThat(generatedFile.exists(), is(false));
-	}
 }

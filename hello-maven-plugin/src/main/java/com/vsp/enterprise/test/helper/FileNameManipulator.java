@@ -122,32 +122,39 @@ public class FileNameManipulator {
 	}
 
 	/**
-	 *
 	 * Converts the package name to a directory path and tack on the "Test"
-	 * postFixFileNameMarker.
 	 *
 	 * @param baseDir "./target/rules"
 	 * @param javaPackage "com.vsp.enterprise"
 	 * @return "./target/rules/com/vsp/enterprise/myFileTest.java"
 	 */
 	public String createJavaTestFileNameString(String baseDir, String javaPackage) {
-		return replaceWithUnixSeparator(createTestFileNameString(baseDir, javaPackage, FileType.JAVA));
+		return replaceWithUnixSeparator(createFileNameString(baseDir, javaPackage, FileType.JAVA));
 	}
 
 	/**
+	 * Converts the package name to a directory path
 	 *
+	 * @param baseDir "./src/test/java"
+	 * @param javaPackage "com.vsp.enterprise"
+	 * @return "./src/test/java/com/vsp/enterprise/myFile.java"
+	 */
+	public String createPojoFileNameString(String baseDir, String javaPackage) {
+		return createFileNameString(baseDir, javaPackage, FileType.POJO);
+	}
+
+	/**
 	 * Converts the package name to a directory path and tack on the "Faux"
-	 * postFixFileNameMarker.
 	 *
 	 * @param baseDir "./src/test/java"
 	 * @param javaPackage "com.vsp.enterprise"
 	 * @return "./src/test/java/com/vsp/enterprise/myFileFaux.drl"
 	 */
 	public String createRuleFauxFileNameString(String baseDir, String javaPackage) {
-		return createTestFileNameString(baseDir, javaPackage, FileType.RULE);
+		return createFileNameString(baseDir, javaPackage, FileType.RULE);
 	}
 
-	private String createTestFileNameString(String baseDir, String javaPackage, FileType fileType) {
+	private String createFileNameString(String baseDir, String javaPackage, FileType fileType) {
 		StringBuilder sb = new StringBuilder(baseDir);
 		sb.append(File.separator).append(convertJavaPackageAsPath(javaPackage)).append(File.separator).append(extractFileName()).append(fileType.extension());
 		return replaceWithUnixSeparator(postPendTextToFileName(sb.toString(), fileType.marker()));
