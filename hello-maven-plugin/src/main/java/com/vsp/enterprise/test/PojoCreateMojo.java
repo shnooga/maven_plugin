@@ -18,9 +18,6 @@ public class PojoCreateMojo extends AbstractMojo {
 	@Parameter(defaultValue = "./target/java", property = "javaTestDir")
 	private String javaTestDirectory;
 
-	@Parameter(defaultValue = "${basedir}/src/main/resources/UnitTestTemplate.txt", property = "templateFile")
-	private String templateRuleFile;
-
 	public void execute() {
 		if ((inputFile == null)) {
 			System.out.println("inputFile param is mandatory!!!");
@@ -40,16 +37,16 @@ public class PojoCreateMojo extends AbstractMojo {
 
 	/**
 	 * @param fileHelper A helper object that reads & write files.
-	 * @param origRuleFileName "./some/dir/myRule.drl"
-	 * @return The freshly generated unit test file name, in unix dash format
+	 * @param origJavaFileName "./some/dir/OrigClass.java"
+	 * @return The freshly generated Pojo file name, in unix dash format
 	 * since windows can read the forward slash also. ie
-	 * "./src/test/java/myOrigRuleTest.java" An empty string for failure.
+	 * "./src/test/java/OrigClass.java" An empty string for failure.
 	 */
-	private String createPojoFile(FileHelper fileHelper, String origRuleFileName) {
+	private String createPojoFile(FileHelper fileHelper, String origJavaFileName) {
 		String qualifiedJavaFileName = "";
 		try {
-			String pojoStr = fileHelper.readJavaFile(origRuleFileName);
-			FileNameManipulator manipulator = new FileNameManipulator(origRuleFileName);
+			String pojoStr = fileHelper.readJavaFile(origJavaFileName);
+			FileNameManipulator manipulator = new FileNameManipulator(origJavaFileName);
 			String qualifiedJavaDir = javaTestDirectory + File.separator + fileHelper.getJavaPackageAsPath();
 			DirectoryUtil directoryUtil = new DirectoryUtil(qualifiedJavaDir);
 
@@ -59,7 +56,6 @@ public class PojoCreateMojo extends AbstractMojo {
 
 			File javaTestFile = new File(qualifiedJavaFileName);
 			if (overwriteExistingJavaTest || !javaTestFile.exists()) {
-				String javaFileName = FileNameManipulator.splitFileName(qualifiedJavaFileName)[1];
 				System.out.println(pojoStr);
 				fileHelper.writeFile(qualifiedJavaFileName, pojoStr);
 			} else {

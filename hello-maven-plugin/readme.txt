@@ -50,3 +50,14 @@ mvn com.vsp.enterprise.test:ruletest:unit_test_create
 -DinputDir=./some/ruledir
 # Optional (defaults are below)
 -DjavaTestDir=./src/test/java
+
+###############################################################################
+# To create a POJO from a given java file
+# NOTE:
+#	In Windows OS, forward slashes are also acceptable. ie "c:/mydir/MyCode.java"
+###############################################################################
+mvn com.vsp.enterprise.test:ruletest:pojo_create 
+-DinputFile=c:/trash/Claim.java
+# Optional (defaults are below)
+-DoverwriteExistJavaTest=false 
+-DjavaTestDir=./src/test/java
