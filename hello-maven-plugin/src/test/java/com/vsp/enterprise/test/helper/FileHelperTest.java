@@ -102,7 +102,6 @@ public class FileHelperTest {
 			String line = br.readLine();
 
 			br.close();
-			fr.close();
 			assertThat(matches(TEXT, line), is(true));
 		} catch (IOException ex) {
 			fail("Unable to read file" + FILE_NAME);

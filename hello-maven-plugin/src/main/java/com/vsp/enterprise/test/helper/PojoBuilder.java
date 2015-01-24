@@ -1,105 +1,105 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.vsp.enterprise.test.helper;
 
 import java.util.StringTokenizer;
+import static com.vsp.enterprise.test.helper.SetterKeyWord.*;
 
-/**
- *
- * @author Papa
- */
 public class PojoBuilder {
 
-				private String[] setterKeyWords = new String[]{" get", " is", " has"};
+	public boolean isSetter(String line) {
+		if (!line.matches(".*public.*"))
+			return false;
 
-				public boolean isSetter(String line) {
+		for (SetterKeyWord keyWord : SetterKeyWord.values()) {
+			if (line.contains(keyWord.methodPrefix()))
+				return true;
+		}
+		return false;
+	}
 
-								boolean retVal = line.matches(".*public.*");
+	/**
+	 * @param line "public String getName() {"
+	 * @return [0] -> type [1]-> property name. ie {"String", "name"}
+	 */
+	public String[] extractPropertyName(String line) {
+		StringTokenizer tokenizer = new StringTokenizer(line, " ");
 
-								if (retVal) {
-												for (String s : setterKeyWords) {
-																if (line.contains(s)) {
-																				break;
-																}
-																retVal = false;
-												}
-								}
-								return retVal;
-				}
+		tokenizer.nextToken();
 
-				/**
-				 *
-				 * @param line
-				 * @return [0] -> type [1]-> property name. ie "String", "name"
-				 */
-				public String[] extractPropertyName(String line) {
-								StringTokenizer tokenizer = new StringTokenizer(line, " ");
+		String type		= tokenizer.hasMoreTokens() ? tokenizer.nextToken() : "";
+		String method	= tokenizer.hasMoreTokens() ? tokenizer.nextToken() : "";
+		int beginIndex	= getSetterKeywordLength(method);
+		int endIndex 	= (method.indexOf("(") == -1) 
+						? method.length() - 1
+						: method.indexOf("(");
 
-								tokenizer.nextToken();
-								String type = tokenizer.hasMoreTokens() ? tokenizer.nextToken() : "";
-								String method = tokenizer.hasMoreTokens() ? tokenizer.nextToken() : "";
-								int beginIndex = getSetterKeywordLength(method);
-								int endIndex = (method.indexOf("(") == -1) ? method.length() - 1 : method.indexOf("(");
+		String propertyName = method.substring(beginIndex, endIndex);
+		return new String[] { type, propertyName };
+	}
 
-								String propertyName = method.substring(beginIndex, endIndex);
-								return new String[]{type, propertyName};
-				}
+	private int getSetterKeywordLength(String methodName) {
+		 for(SetterKeyWord keyWord : SetterKeyWord.values()) 
+			 if (methodName.contains(keyWord.text())) 
+				 return keyWord.length();
+		return 0;
+	}
 
-				private int getSetterKeywordLength(String methodName) {
-								if (methodName.contains("get")) {
-												return 3;
-								}
-								if (methodName.contains("has")) {
-												return 3;
-								}
-								if (methodName.contains("is")) {
-												return 2;
-								}
-								return 0;
-				}
+	private String lowerCaseFirstChar(String name) {
+		StringBuilder sb = new StringBuilder(name.substring(0, 1).toLowerCase());
+		sb.append(name.substring(1, name.length()));
+		return sb.toString();
 
-				private String lowerCaseFirstChar(String name) {
-								StringBuilder sb = new StringBuilder(name.substring(0, 1).toLowerCase());
-								sb.append(name.substring(1, name.length()));
-								return sb.toString();
+	}
 
-				}
+	public String buildGetterMethod(String line) {
+		line = swapAddForGetKeyword(line);
 
-				public String buildGetterMethod(String line) {
-								StringBuilder sb = new StringBuilder();
-								String[] pair = extractPropertyName(line);
-								int index = line.indexOf("{");
+		StringBuilder sb = new StringBuilder();
+		String[] pair = extractPropertyName(line);
+		int index = line.indexOf("{");
 
-								if (index != -1) {
-												return sb.append(line.substring(0, index + 1)).append(" return ").append(lowerCaseFirstChar(pair[1])).append("; }").toString();
-								} else if (line.indexOf(")") != -1) {
+		if (index != -1) {
+			return sb.append(line.substring(0, index + 1)).append(" return ").append(lowerCaseFirstChar(pair[1])).append("; }").toString();
+		} else if (line.indexOf(")") != -1) {
+			return sb.append(line).append(" {").append(" return ").append(lowerCaseFirstChar(pair[1])).append("; }").toString();
+		}
+		return sb.append(line).append(") {").append(" return ").append(lowerCaseFirstChar(pair[1])).append("; }").toString();
+	}
 
-												return sb.append(line).append(" {").append(" return ").append(lowerCaseFirstChar(pair[1])).append("; }").toString();
-								}
-								return sb.append(line).append(") {").append(" return ").append(lowerCaseFirstChar(pair[1])).append("; }").toString();
+	private boolean isAddMethod(String line) {
+		return (isSetter(line) && line.contains(ADD.methodPrefix()));
+	}
 
-				}
+	private String swapAddForGetKeyword(String line) {
+		if(!isAddMethod(line))
+			return line;
 
-				public String buildSetterMethod(String line) {
-								StringBuilder sb = new StringBuilder("\tpublic void set");
-								String[] pair = extractPropertyName(line);
-								String propName = lowerCaseFirstChar(pair[1]);
+		int index = line.indexOf(ADD.text());
+		StringBuilder sb = new StringBuilder(line.substring(0, index));
 
-								sb.append(pair[1]).append("(").append(pair[0]).append(" ").append(propName).append(") { this.").append(propName).append(" = ").append(propName).append("; }");
-								return sb.toString();
+		sb.append(GET.text()).append(line.substring(index + 3));
+		return sb.toString();
+	}
 
-				}
+	public String buildSetterMethod(String line) {
+		boolean isAddMethod	= isAddMethod(line);
+		StringBuilder sb 	= new StringBuilder("\t");
+		String[] pair		= extractPropertyName(line);
+		String propName		= lowerCaseFirstChar(pair[1]);
 
-				public String buildProperty(String line) {
-								String[] pair = extractPropertyName(line);
-								String propName = lowerCaseFirstChar(pair[1]);
-								StringBuilder sb = new StringBuilder("\tprivate ");
+		sb.append(isAddMethod ? line : "public void set");
+		if(!isAddMethod)
+			sb.append(pair[1]).append("(").append(pair[0]).append(" ").append(propName).append(")");
+		sb.append(" { this.").append(propName).append(" = ").append(propName).append("; }");
+		return sb.toString();
+	}
 
-								sb.append(pair[0]).append(" ").append(propName).append(";");
-								return sb.toString();
-				}
+	public String buildProperty(String line) {
+		String[] pair = extractPropertyName(line);
+		String propName = lowerCaseFirstChar(pair[1]);
+		StringBuilder sb = new StringBuilder("\tprivate ");
+
+		sb.append(pair[0]).append(" ").append(propName).append(";");
+		return sb.toString();
+	}
 
 }

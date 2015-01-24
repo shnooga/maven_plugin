@@ -20,11 +20,19 @@ public class PojoBuilderTest {
 	}
 	
 	@Test
-	public void testExtractPropertyName_Pos() {
+	public void testExtractPropertyName_GetMethod() {
 		String[] pair = instance.extractPropertyName("public int getAge()");
 
 		assertThat(pair[0], is("int"));
 		assertThat(pair[1], is("Age"));
+	}
+	
+	@Test
+	public void testExtractPropertyName_AddMethod() {
+		String[] pair = instance.extractPropertyName("public ClaimLine addDenyLineValidationError()");
+
+		assertThat(pair[0], is("ClaimLine"));
+		assertThat(pair[1], is("DenyLineValidationError"));
 	}
 
 	@Test
@@ -46,9 +54,21 @@ public class PojoBuilderTest {
 	}
 
 	@Test
+	public void testBuildGetterMethodFromAddMethod() {
+		String method = instance.buildGetterMethod("public ClaimLine addDenyLineValidationError(");
+		assertThat(method, is("public ClaimLine getDenyLineValidationError() { return denyLineValidationError; }"));
+	}
+
+	@Test
 	public void testBuildSetterMethod() {
 		String method = instance.buildSetterMethod("public int getAge(");
 		assertThat(method, is("\tpublic void setAge(int age) { this.age = age; }"));
+	}
+
+	@Test
+	public void testBuildSetterMethodFromAddMethod2() {
+		String method = instance.buildSetterMethod("public void addClaimValidationError(String errorString, Claim claim)");
+		assertThat(method, is("\tpublic void addClaimValidationError(String errorString, Claim claim) { this.claimValidationError = claimValidationError; }"));
 	}
 
 	@Test

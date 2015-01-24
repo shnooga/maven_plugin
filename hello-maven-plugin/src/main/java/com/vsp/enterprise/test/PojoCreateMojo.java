@@ -22,17 +22,9 @@ public class PojoCreateMojo extends AbstractMojo {
 		if ((inputFile == null)) {
 			System.out.println("inputFile param is mandatory!!!");
 			return;
-		}
-
-		if (inputFile != null) {
+		} else {
 			createPojoFile(inputFile);
 		}
-	}
-
-	private void createPojoFile(String origRuleFileName) {
-		FileHelper fileHelper = new FileHelper();
-
-		createPojoFile(fileHelper, origRuleFileName);
 	}
 
 	/**
@@ -42,10 +34,11 @@ public class PojoCreateMojo extends AbstractMojo {
 	 * since windows can read the forward slash also. ie
 	 * "./src/test/java/OrigClass.java" An empty string for failure.
 	 */
-	private String createPojoFile(FileHelper fileHelper, String origJavaFileName) {
+	private String createPojoFile(String origJavaFileName) {
+		FileHelper fileHelper = new FileHelper();
 		String qualifiedJavaFileName = "";
 		try {
-			String pojoStr = fileHelper.readJavaFile(origJavaFileName);
+			String pojoStr = fileHelper.translateToPojo(origJavaFileName);
 			FileNameManipulator manipulator = new FileNameManipulator(origJavaFileName);
 			String qualifiedJavaDir = javaTestDirectory + File.separator + fileHelper.getJavaPackageAsPath();
 			DirectoryUtil directoryUtil = new DirectoryUtil(qualifiedJavaDir);
@@ -56,8 +49,8 @@ public class PojoCreateMojo extends AbstractMojo {
 
 			File javaTestFile = new File(qualifiedJavaFileName);
 			if (overwriteExistingJavaTest || !javaTestFile.exists()) {
-				System.out.println(pojoStr);
 				fileHelper.writeFile(qualifiedJavaFileName, pojoStr);
+				System.out.println(pojoStr);
 			} else {
 				System.out.println("" + qualifiedJavaFileName + " already exists!! To overwrite use -DoverwriteExistJavaTest=true");
 			}
