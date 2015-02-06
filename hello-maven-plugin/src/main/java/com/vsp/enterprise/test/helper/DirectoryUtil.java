@@ -12,6 +12,7 @@ public class DirectoryUtil {
 
 	String dir;
 	static public final String DRL_REGEX = ".+\\.drl";
+	static public final String JAVA_REGEX = ".+\\.java";
 
 	public DirectoryUtil(String dir) {
 		this.dir = dir;
@@ -40,7 +41,7 @@ public class DirectoryUtil {
 		return false;
 	}
 
-	public boolean delDir() {
+	public static boolean delDir(String dir) {
 		boolean retVal = true;
 		try {
 			File file = new File(dir);
@@ -65,6 +66,10 @@ public class DirectoryUtil {
 
 	public List<File> ruleFilesSearch() {
 		return filesSearch(DRL_REGEX);
+	}
+
+	public List<File> javaFilesSearch() {
+		return filesSearch(JAVA_REGEX);
 	}
 
 	private void findFile(String regEx, File parentFile, List<File> filesFound) {

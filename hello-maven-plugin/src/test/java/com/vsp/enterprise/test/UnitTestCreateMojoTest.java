@@ -43,12 +43,8 @@ public class UnitTestCreateMojoTest {
 
 	@After
 	public void tearDown() throws Exception {
-		DirectoryUtil directoryUtil;
-
-		directoryUtil = new DirectoryUtil(FAUX_RULE_DIR);
-		directoryUtil.delDir();
-		directoryUtil = new DirectoryUtil(JAVA_TEST_DIR);
-		directoryUtil.delDir();
+		DirectoryUtil.delDir(FAUX_RULE_DIR);
+		DirectoryUtil.delDir(JAVA_TEST_DIR);
 		instance = null;
 	}
 

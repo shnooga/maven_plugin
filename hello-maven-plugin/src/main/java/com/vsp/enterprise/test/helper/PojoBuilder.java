@@ -1,7 +1,7 @@
 package com.vsp.enterprise.test.helper;
 
 import java.util.StringTokenizer;
-import static com.vsp.enterprise.test.helper.SetterKeyWord.*;
+import static com.vsp.enterprise.test.helper.GetterKeyWord.*;
 
 public class PojoBuilder {
 
@@ -9,8 +9,10 @@ public class PojoBuilder {
 		if (!line.matches(".*public.*"))
 			return false;
 
-		for (SetterKeyWord keyWord : SetterKeyWord.values()) {
-			if (line.contains(keyWord.methodPrefix()))
+		String[] propNames = extractPropertyName(line);
+
+		for (GetterKeyWord keyWord : GetterKeyWord.values()) {
+			if (	(propNames[2].indexOf(keyWord.text()) == 0) && !propNames[1].isEmpty())
 				return true;
 		}
 		return false;
@@ -18,10 +20,10 @@ public class PojoBuilder {
 
 	/**
 	 * @param line "public String getName() {"
-	 * @return [0] -> type [1]-> property name. ie {"String", "name"}
+	 * @return [0] -> type [1]-> property name [2]-> method. ie {"String", "name", "getName"}
 	 */
 	public String[] extractPropertyName(String line) {
-		StringTokenizer tokenizer = new StringTokenizer(line, " ");
+		StringTokenizer tokenizer = new StringTokenizer(line, " \t");
 
 		tokenizer.nextToken();
 
@@ -32,12 +34,12 @@ public class PojoBuilder {
 						? method.length() - 1
 						: method.indexOf("(");
 
-		String propertyName = method.substring(beginIndex, endIndex);
-		return new String[] { type, propertyName };
+		String propertyName = (endIndex == -1) ? "" : method.substring(beginIndex, endIndex);
+		return new String[] { type, propertyName, method };
 	}
 
 	private int getSetterKeywordLength(String methodName) {
-		 for(SetterKeyWord keyWord : SetterKeyWord.values()) 
+		 for(GetterKeyWord keyWord : GetterKeyWord.values()) 
 			 if (methodName.contains(keyWord.text())) 
 				 return keyWord.length();
 		return 0;

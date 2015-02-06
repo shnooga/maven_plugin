@@ -2,6 +2,7 @@ package com.vsp.enterprise.test;
 
 import com.vsp.enterprise.test.helper.*;
 import java.io.*;
+import java.util.List;
 import java.util.logging.*;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugins.annotations.*;
@@ -15,18 +16,41 @@ public class PojoCreateMojo extends AbstractMojo {
 	@Parameter(property = "inputFile")
 	private String inputFile;
 
+	@Parameter(property = "inputDir")
+	private String inputDir;
+
 	@Parameter(defaultValue = "./target/java", property = "javaTestDir")
 	private String javaTestDirectory;
 
 	public void execute() {
-		if ((inputFile == null)) {
-			System.out.println("inputFile param is mandatory!!!");
+		if ((inputFile == null) && (inputDir == null)) {
+			System.out.println("inputFile or inputDir param are mandatory!!!");
 			return;
-		} else {
+		}
+
+		if (inputFile != null) {
 			createPojoFile(inputFile);
+		}
+		if (inputDir != null) {
+			createPojoFiles(inputDir);
 		}
 	}
 
+	private void createPojoFiles(String ejbFileDir) {
+		try {
+
+			DirectoryUtil directoryUtil = new DirectoryUtil(ejbFileDir);
+			List<File> files = directoryUtil.javaFilesSearch();
+
+			for (File ejbFile : files) {
+				System.out.println(ejbFile.getName() + " : " + ejbFile.getCanonicalPath());
+				createPojoFile(ejbFile.getCanonicalPath());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
 	/**
 	 * @param fileHelper A helper object that reads & write files.
 	 * @param origJavaFileName "./some/dir/OrigClass.java"
@@ -76,6 +100,13 @@ public class PojoCreateMojo extends AbstractMojo {
 		this.inputFile = inputFile;
 	}
 
+	public String getInputDir() {
+		return inputDir;
+	}
+
+	public void setInputDir(String inputDir) {
+		this.inputDir = inputDir;
+	}
 	public String getJavaTestDirectory() {
 		return javaTestDirectory;
 	}

@@ -14,9 +14,14 @@ public class PojoBuilderTest {
 	}
 
 	@Test
-	public void testIsSetter_get_Neg() {
+	public void testIsSetter_get_Neg1() {
 		assertThat(instance.isSetter("private int getAge()"), is(false));
 		assertThat(instance.isSetter(" private int   getAge()"), is(false));
+	}
+
+	@Test
+	public void testIsSetter_get_Neg2() {
+		assertThat(instance.isSetter("public static String extractHashCode(Address address) {"), is(false));
 	}
 	
 	@Test

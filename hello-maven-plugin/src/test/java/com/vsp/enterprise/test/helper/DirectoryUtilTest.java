@@ -28,10 +28,8 @@ public class DirectoryUtilTest {
 	public void tearDown() {
 		DirectoryUtil instance;
 
-		instance = new DirectoryUtil(singleDir);
-		instance.delDir();
-		instance = new DirectoryUtil(multiDelDir);
-		instance.delDir();
+		DirectoryUtil.delDir(singleDir);
+		DirectoryUtil.delDir(multiDelDir);
 	}
 
 	@Test
@@ -70,8 +68,7 @@ public class DirectoryUtilTest {
 		instance = new DirectoryUtil(dir);
 		instance.mkdirs();
 
-		instance = new DirectoryUtil(delDir);
-		instance.delDir();
+		DirectoryUtil.delDir(delDir);
 		File f = new File(delDir);
 		assertThat(f.exists(), is(false));
 	}

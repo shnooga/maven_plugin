@@ -31,6 +31,8 @@ public class PojoCreateMojoTest {
 
 	@Before
 	public void setUp() throws Exception {
+		DirectoryUtil.delDir(JAVA_TEST_DIR);
+
 		instance = new PojoCreateMojo();
 		instance.setOverwriteExistingJavaTest(true);
 		instance.setJavaTestDirectory(JAVA_TEST_DIR);
@@ -38,17 +40,26 @@ public class PojoCreateMojoTest {
 
 	@After
 	public void tearDown() throws Exception {
-		DirectoryUtil directoryUtil = new DirectoryUtil(JAVA_TEST_DIR);
-
-		directoryUtil.delDir();
+//		DirectoryUtil directoryUtil = new DirectoryUtil(JAVA_TEST_DIR);
+//		directoryUtil.delDir();
 		instance = null;
+	}
+
+	@Test
+	public void testPojoCreateFromDir() {
+		instance.setInputDir("C:/data/java/drools_test_harness/src/main/java/com");
+		instance.execute();
+
+		File pojoFile = new File(
+				"./target/java/com/vsp/enterprise/busobj/entity/claim/Claim.java");
+		assertThat(pojoFile.exists(), is(true));
 	}
 
 	/**
 	 * Given a java filename; create a corresponding POJO class
 	 */
 	@Test
-	public void testPojoCreate() {
+	public void testPojoCreateFromFile() {
 		instance.setInputFile("./Claim.java");
 		instance.execute();
 
@@ -63,7 +74,7 @@ public class PojoCreateMojoTest {
 		long timeStamp;
 
 		// 1. First, create POJO
-		testPojoCreate();
+		testPojoCreateFromFile();
 		pojoFile = new File(
 				"./target/java/com/vsp/enterprise/busobj/entity/claim/Claim.java");
 		timeStamp = pojoFile.lastModified();
@@ -86,7 +97,7 @@ public class PojoCreateMojoTest {
 		long timeStamp;
 
 		// 1. First, create POJO
-		testPojoCreate();
+		testPojoCreateFromFile();
 		pojoFile = new File(
 				"./target/java/com/vsp/enterprise/busobj/entity/claim/Claim.java");
 		timeStamp = pojoFile.lastModified();

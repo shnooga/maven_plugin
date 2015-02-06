@@ -1,6 +1,6 @@
 package com.vsp.enterprise.test.helper;
 
-public enum SetterKeyWord {
+public enum GetterKeyWord {
 	GET(" get", "get"),
 	IS(" is", "is"),
 	HAS(" has", "has"),
@@ -10,7 +10,7 @@ public enum SetterKeyWord {
 	private String text;
 	private int length;
 	
-	SetterKeyWord(String methodPrefix, String text) {
+	GetterKeyWord(String methodPrefix, String text) {
 		this.methodPrefix = methodPrefix;
 		this.text = text;
 		this.length = text.length();
