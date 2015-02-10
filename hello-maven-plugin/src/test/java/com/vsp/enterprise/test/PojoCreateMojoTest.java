@@ -43,11 +43,11 @@ public class PojoCreateMojoTest {
 
 	@Test
 	public void testPojoCreateFromDir() {
-		instance.setInputDir("./src/main/java");
+		instance.setInputDir("./src/main/java/com/vsp/enterprise/test/helper");
 		instance.execute();
 
 		File pojoFile = new File(
-				"./target/java/com/vsp/enterprise/test/helper/Filehelper.java");
+				"./target/java/com/vsp/enterprise/test/helper/FileHelper.java");
 		assertThat(pojoFile.exists(), is(true));
 	}
 
