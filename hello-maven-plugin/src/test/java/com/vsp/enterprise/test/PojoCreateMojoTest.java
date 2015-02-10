@@ -1,6 +1,8 @@
 package com.vsp.enterprise.test;
 
-import com.vsp.enterprise.test.helper.DirectoryUtil;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.core.IsNot.not;
+import static org.junit.Assert.assertThat;
 
 import java.io.File;
 import java.io.IOException;
@@ -9,15 +11,11 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
 
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.core.IsNot.not;
-
 import org.junit.After;
-
-import static org.junit.Assert.*;
-
 import org.junit.Before;
 import org.junit.Test;
+
+import com.vsp.enterprise.test.helper.DirectoryUtil;
 
 /**
  *
@@ -40,18 +38,16 @@ public class PojoCreateMojoTest {
 
 	@After
 	public void tearDown() throws Exception {
-//		DirectoryUtil directoryUtil = new DirectoryUtil(JAVA_TEST_DIR);
-//		directoryUtil.delDir();
 		instance = null;
 	}
 
 	@Test
 	public void testPojoCreateFromDir() {
-		instance.setInputDir("C:/data/java/drools_test_harness/src/main/java/com");
+		instance.setInputDir("./src/main/java");
 		instance.execute();
 
 		File pojoFile = new File(
-				"./target/java/com/vsp/enterprise/busobj/entity/claim/Claim.java");
+				"./target/java/com/vsp/enterprise/test/helper/Filehelper.java");
 		assertThat(pojoFile.exists(), is(true));
 	}
 
@@ -102,7 +98,7 @@ public class PojoCreateMojoTest {
 				"./target/java/com/vsp/enterprise/busobj/entity/claim/Claim.java");
 		timeStamp = pojoFile.lastModified();
 		dumpFileAttributes("testOverWriteExistingPojo_Flag_true", "./target/java/com/vsp/enterprise/busobj/entity/claim/Claim.java");
-		Thread.currentThread().sleep(3000);
+		Thread.sleep(3000);
 
 		// 2. Attempt to create POJO again with overWriteFlag = true
 		instance.setOverwriteExistingJavaTest(true);
@@ -120,22 +116,14 @@ public class PojoCreateMojoTest {
 			Path path = Paths.get(filePath);
 			BasicFileAttributes attr;
 			attr = Files.readAttributes(path, BasicFileAttributes.class);
-			System.out.println("\n ~~~~~~~~~~~~ " + title +"~~~~~~~~~~~~");
 
+			System.out.println("\n ~~~~~~~~~~~~ " + title +"~~~~~~~~~~~~");
 			System.out.println("creationTime: " + attr.creationTime());
 			System.out.println("lastAccessTime: " + attr.lastAccessTime());
 			System.out.println("lastModifiedTime: " + attr.lastModifiedTime());
-
-//			System.out.println("isDirectory: " + attr.isDirectory());
-//			System.out.println("isOther: " + attr.isOther());
-//			System.out.println("isRegularFile: " + attr.isRegularFile());
-//			System.out.println("isSymbolicLink: " + attr.isSymbolicLink());
-//			System.out.println("size: " + attr.size());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
 	}
-
 }

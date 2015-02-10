@@ -86,7 +86,7 @@ public class FileHelper {
 
 			sb.append("// This POJO was translated from a java class .\n");
 			while ((line = br.readLine()) != null) {
-				if (line.matches(".*package .*")) {
+				if (javaPackage.isEmpty() && line.matches(".*package .*")) {
 					javaPackage = stripSemiColon(line);
 					sb.append(line).append("\n\n");
 				}
